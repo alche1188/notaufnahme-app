@@ -43,11 +43,11 @@ export default async function handler(req, res) {
       if (!bodyPart || !lang) return res.status(400).json({ error: 'Missing bodyPart or lang' });
 
       const langName = langNames[lang] || lang;
-      const prompt = `You are an experienced emergency room doctor. Generate exactly 3 short key symptom questions for a patient with pain in: ${bodyPart}. The label values must be in ${langName}. Respond ONLY as a JSON array with exactly 3 objects: [{"emoji":"🔥","label":"burning"}]. No other text.`;
+      const prompt = `Du bist ein erfahrener Notaufnahmearzt. Generiere bis zu 6 kurze Leitsymptom-Fragen für einen Patienten mit Beschwerden in: ${bodyPart}. Maximal 6, nur medizinisch sinnvolle Fragen, keine künstliche Auffüllung. Die label-Werte müssen auf ${langName} sein. Antworte nur als JSON Array mit Objekten: [{"emoji":"🔥","label":"..."}]. Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const questions = JSON.parse(raw);
       if (!Array.isArray(questions) || questions.length < 1) throw new Error('Unexpected response');
-      return res.status(200).json({ questions: questions.slice(0, 3) });
+      return res.status(200).json({ questions: questions.slice(0, 6) });
 
     } else if (action === 'diagnose') {
       const { bodyPart, symptoms, lang } = req.body;
