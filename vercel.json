@@ -1,5 +1,3 @@
-Die vercel.json im Root anpassen:
-
 {
   "version": 2,
   "builds": [
@@ -14,11 +12,11 @@ Die vercel.json im Root anpassen:
   ],
   "routes": [
     {
-      "src": "/api/translate",
-      "dest": "/api/translate.js"
+      "src": "/api/(.*)",
+      "dest": "/api/$1.js"
     },
     {
-      "src": "/",
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ]
