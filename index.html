@@ -26,6 +26,7 @@
       padding: 2rem 1.5rem;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     .screen { display: none; flex-direction: column; flex: 1; }
@@ -107,10 +108,24 @@
     .bio-gender-btn:hover { background: #E3F2FD; }
     .bio-gender-btn.selected { background: #E3F2FD; }
     .bio-gender-btn .symbol { font-size: 3.5rem; line-height: 1; font-weight: bold; }
+
+    .loading-overlay {
+      display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.88);
+      border-radius: 20px; align-items: center; justify-content: center;
+      z-index: 10; flex-direction: column; gap: 1rem;
+    }
+    .loading-overlay.active { display: flex; }
+    .spinner {
+      width: 36px; height: 36px; border: 4px solid #e0e0e0;
+      border-top-color: #2196F3; border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 <div class="app" id="app">
+  <div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
 
   <!-- Screen 0: Willkommen -->
   <div class="screen active" id="s0">
@@ -213,7 +228,7 @@
     <div class="progress" id="prog5"></div>
     <div class="screen-title" id="followup-title">Folgefragen</div>
     <div class="grid" id="followup-grid" style="margin-bottom:auto;"></div>
-    <button class="next-btn" id="next5" disabled onclick="goto(6)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next5" disabled onclick="gotoFromFollowup()" data-i18n="next">Weiter →</button>
   </div>
 
   <!-- Screen 6: Schmerz -->
@@ -288,7 +303,7 @@
 <script>
   const state = {
     lang: 'de', gender: null, age: null, who: null,
-    zone: null, followup: [], pain: null, since: null
+    zone: null, followup: [], pain: null, since: null, diagnoses: []
   };
 
   const T = {
@@ -330,196 +345,6 @@
       d_kidney_stone: 'Nierenstein', d_bowel_obstruction: 'Darmverschluss',
       d_appendicitis: 'Appendizitis', d_gastritis: 'Gastritis', d_bowel_disease: 'Darmerkrankung',
     },
-    en: {
-      next: 'Next →',
-      welcome_title: 'Welcome', welcome_sub: 'Please select your language',
-      s1_title: 'Who are you?',
-      who_self: 'Myself', who_child: 'My child', who_parent: 'Parent', who_other: 'Other person',
-      s2_title: 'Biological sex',
-      gender_m: 'Male', gender_f: 'Female',
-      sage_title: 'How old?',
-      age_child: 'Child (0–12)', age_teen: 'Teen (13–17)', age_adult: 'Adult (18–60)', age_senior: 'Senior (60+)',
-      s3_title: 'Where does it hurt?', zone_hint: 'Tap area',
-      zone_Kopf: 'Head', zone_Brust: 'Chest', zone_Bauch: 'Abdomen',
-      zone_LArm: 'Left arm', zone_RArm: 'Right arm', zone_LBein: 'Left leg', zone_RBein: 'Right leg',
-      fu_title_Kopf: 'How did the headache start?',
-      fu_title_Brust: 'How does the chest pain feel?',
-      fu_title_Bauch: 'When is it worse?',
-      fu_title_arm: 'What exactly do you feel?', fu_title_leg: 'What exactly do you feel?',
-      f_sudden: 'Sudden like a thunderclap', f_gradual: 'Gradual', f_vision: 'With vision problems', f_nausea: 'With nausea',
-      f_pressure: 'Pressure / tightness', f_stabbing: 'Stabbing', f_breath: 'With shortness of breath', f_radiates: 'Radiates into arm',
-      f_after_eat: 'After eating', f_waves: 'In waves / attacks', f_same_spot: 'Always in same spot', f_wanders: 'Moves around',
-      f_numb: 'Numbness', f_burn: 'Burning', f_swell: 'Swelling', f_fall: 'Possible fall', f_burn_red: 'Burning / redness',
-      s5_title: 'How severe is the pain?',
-      pain_1: 'Barely (1/10)', pain_3: 'Mild (3/10)', pain_5: 'Moderate (5/10)',
-      pain_7: 'Severe (7/10)', pain_9: 'Very severe (9/10)', pain_10: 'Unbearable (10/10)',
-      s6_title: 'Since when?',
-      since_1h: 'Less than 1 hour', since_24h: '1–24 hours', since_7d: '2–7 days', since_week: 'More than 1 week',
-      wait_label: 'Your queue number', for_staff: 'For staff',
-      sum_patient: 'Patient', sum_complaint: 'Complaint', sum_symptom: 'Main symptom',
-      sum_pain: 'Pain', sum_since: 'Since', sum_causes: 'Possible causes',
-      no_estimate: 'No assessment available',
-      prio_urgent: 'Urgent', prio_likely: 'Likely', prio_possible: 'Possible',
-      d_subarachnoid: 'Subarachnoid haemorrhage', d_migraine: 'Migraine', d_hypertension_crisis: 'Hypertensive crisis',
-      d_tension_headache: 'Tension headache', d_hypertension: 'Hypertension',
-      d_heart_attack: 'Heart attack', d_angina: 'Angina pectoris', d_pulmonary_embolism: 'Pulmonary embolism',
-      d_muscular: 'Muscular cause', d_reflux: 'Acid reflux', d_heart_problems: 'Heart problems',
-      d_biliary_colic: 'Biliary colic', d_gastric_ulcer: 'Gastric ulcer', d_hepatitis: 'Hepatitis',
-      d_kidney_stone: 'Kidney stone', d_bowel_obstruction: 'Bowel obstruction',
-      d_appendicitis: 'Appendicitis', d_gastritis: 'Gastritis', d_bowel_disease: 'Bowel disease',
-    },
-    tr: {
-      next: 'İleri →',
-      welcome_title: 'Hoş Geldiniz', welcome_sub: 'Lütfen dilinizi seçin',
-      s1_title: 'Sen kimsin?',
-      who_self: 'Ben', who_child: 'Çocuğum', who_parent: 'Ebeveyn', who_other: 'Başka kişi',
-      s2_title: 'Biyolojik cinsiyet',
-      gender_m: 'Erkek', gender_f: 'Kadın',
-      sage_title: 'Kaç yaşındasınız?',
-      age_child: 'Çocuk (0–12)', age_teen: 'Genç (13–17)', age_adult: 'Yetişkin (18–60)', age_senior: 'Yaşlı (60+)',
-      s3_title: 'Neresi ağrıyor?', zone_hint: 'Bölgeye dokunun',
-      zone_Kopf: 'Baş', zone_Brust: 'Göğüs', zone_Bauch: 'Karın',
-      zone_LArm: 'Sol kol', zone_RArm: 'Sağ kol', zone_LBein: 'Sol bacak', zone_RBein: 'Sağ bacak',
-      fu_title_Kopf: 'Baş ağrısı nasıl başladı?',
-      fu_title_Brust: 'Göğüs ağrısı nasıl hissettiriyor?',
-      fu_title_Bauch: 'Ne zaman daha kötü?',
-      fu_title_arm: 'Ne hissediyorsunuz?', fu_title_leg: 'Ne hissediyorsunuz?',
-      f_sudden: 'Aniden şimşek gibi', f_gradual: 'Yavaş yavaş', f_vision: 'Görme bozukluğuyla', f_nausea: 'Mide bulantısıyla',
-      f_pressure: 'Baskı / sıkışma', f_stabbing: 'Bıçak gibi', f_breath: 'Nefes darlığıyla', f_radiates: 'Kola yayılıyor',
-      f_after_eat: 'Yemekten sonra', f_waves: 'Dalgalar halinde', f_same_spot: 'Hep aynı yerde', f_wanders: 'Yer değiştiriyor',
-      f_numb: 'Uyuşma', f_burn: 'Yanma', f_swell: 'Şişlik', f_fall: 'Düşme olasılığı', f_burn_red: 'Yanma / kızarıklık',
-      s5_title: 'Ağrı ne kadar şiddetli?',
-      pain_1: 'Hafif (1/10)', pain_3: 'Az (3/10)', pain_5: 'Orta (5/10)',
-      pain_7: 'Şiddetli (7/10)', pain_9: 'Çok şiddetli (9/10)', pain_10: 'Dayanılmaz (10/10)',
-      s6_title: 'Ne zamandan beri?',
-      since_1h: '1 saatten az', since_24h: '1–24 saat', since_7d: '2–7 gün', since_week: '1 haftadan fazla',
-      wait_label: 'Sıra numaranız', for_staff: 'Personel için',
-      sum_patient: 'Hasta', sum_complaint: 'Şikayet', sum_symptom: 'Ana semptom',
-      sum_pain: 'Ağrı', sum_since: 'Beri', sum_causes: 'Olası nedenler',
-      no_estimate: 'Değerlendirme mevcut değil',
-      prio_urgent: 'Acil', prio_likely: 'Muhtemel', prio_possible: 'Mümkün',
-      d_subarachnoid: 'Subaraknoid kanama', d_migraine: 'Migren', d_hypertension_crisis: 'Hipertansif kriz',
-      d_tension_headache: 'Gerilim baş ağrısı', d_hypertension: 'Hipertansiyon',
-      d_heart_attack: 'Kalp krizi', d_angina: 'Anjina pektoris', d_pulmonary_embolism: 'Pulmoner emboli',
-      d_muscular: 'Kas kaynaklı', d_reflux: 'Reflü', d_heart_problems: 'Kalp problemleri',
-      d_biliary_colic: 'Safra kesesi koliği', d_gastric_ulcer: 'Mide ülseri', d_hepatitis: 'Karaciğer iltihabı',
-      d_kidney_stone: 'Böbrek taşı', d_bowel_obstruction: 'Bağırsak tıkanması',
-      d_appendicitis: 'Apandisit', d_gastritis: 'Gastrit', d_bowel_disease: 'Bağırsak hastalığı',
-    },
-    ar: {
-      next: 'التالي →',
-      welcome_title: 'أهلاً وسهلاً', welcome_sub: 'يرجى اختيار لغتك',
-      s1_title: 'من أنت؟',
-      who_self: 'أنا', who_child: 'طفلي', who_parent: 'أحد الوالدين', who_other: 'شخص آخر',
-      s2_title: 'الجنس البيولوجي',
-      gender_m: 'ذكر', gender_f: 'أنثى',
-      sage_title: 'كم عمرك؟',
-      age_child: 'طفل (0–12)', age_teen: 'مراهق (13–17)', age_adult: 'بالغ (18–60)', age_senior: 'كبير السن (60+)',
-      s3_title: 'أين يؤلمك؟', zone_hint: 'اضغط على المنطقة',
-      zone_Kopf: 'الرأس', zone_Brust: 'الصدر', zone_Bauch: 'البطن',
-      zone_LArm: 'الذراع الأيسر', zone_RArm: 'الذراع الأيمن', zone_LBein: 'الساق اليسرى', zone_RBein: 'الساق اليمنى',
-      fu_title_Kopf: 'كيف بدأ الصداع؟',
-      fu_title_Brust: 'كيف يبدو ألم الصدر؟',
-      fu_title_Bauch: 'متى يشتد الألم؟',
-      fu_title_arm: 'ماذا تشعر بالضبط؟', fu_title_leg: 'ماذا تشعر بالضبط؟',
-      f_sudden: 'فجأة كالبرق', f_gradual: 'تدريجياً', f_vision: 'مع اضطراب الرؤية', f_nausea: 'مع غثيان',
-      f_pressure: 'ضغط / ضيق', f_stabbing: 'طعن', f_breath: 'مع ضيق التنفس', f_radiates: 'يمتد إلى الذراع',
-      f_after_eat: 'بعد الأكل', f_waves: 'على شكل موجات', f_same_spot: 'دائماً في نفس المكان', f_wanders: 'يتنقل',
-      f_numb: 'خدر', f_burn: 'حرقة', f_swell: 'تورم', f_fall: 'احتمال سقوط', f_burn_red: 'حرقة / احمرار',
-      s5_title: 'ما شدة الألم؟',
-      pain_1: 'طفيف (1/10)', pain_3: 'خفيف (3/10)', pain_5: 'متوسط (5/10)',
-      pain_7: 'شديد (7/10)', pain_9: 'شديد جداً (9/10)', pain_10: 'لا يُحتمل (10/10)',
-      s6_title: 'منذ متى؟',
-      since_1h: 'أقل من ساعة', since_24h: '1–24 ساعة', since_7d: '2–7 أيام', since_week: 'أكثر من أسبوع',
-      wait_label: 'رقم انتظارك', for_staff: 'للطاقم الطبي',
-      sum_patient: 'المريض', sum_complaint: 'الشكوى', sum_symptom: 'العرض الرئيسي',
-      sum_pain: 'الألم', sum_since: 'منذ', sum_causes: 'الأسباب المحتملة',
-      no_estimate: 'لا يتوفر تقييم',
-      prio_urgent: 'عاجل', prio_likely: 'محتمل', prio_possible: 'ممكن',
-      d_subarachnoid: 'نزيف تحت العنكبوتية', d_migraine: 'صداع نصفي', d_hypertension_crisis: 'أزمة ارتفاع ضغط الدم',
-      d_tension_headache: 'صداع التوتر', d_hypertension: 'ارتفاع ضغط الدم',
-      d_heart_attack: 'احتشاء عضلة القلب', d_angina: 'الذبحة الصدرية', d_pulmonary_embolism: 'انسداد الشريان الرئوي',
-      d_muscular: 'سبب عضلي', d_reflux: 'الارتداد المريئي', d_heart_problems: 'مشاكل القلب',
-      d_biliary_colic: 'مغص صفراوي', d_gastric_ulcer: 'قرحة المعدة', d_hepatitis: 'التهاب الكبد',
-      d_kidney_stone: 'حصى الكلى', d_bowel_obstruction: 'انسداد الأمعاء',
-      d_appendicitis: 'التهاب الزائدة الدودية', d_gastritis: 'التهاب المعدة', d_bowel_disease: 'مرض الأمعاء',
-    },
-    ru: {
-      next: 'Далее →',
-      welcome_title: 'Добро пожаловать', welcome_sub: 'Пожалуйста, выберите язык',
-      s1_title: 'Кто вы?',
-      who_self: 'Я сам(а)', who_child: 'Мой ребёнок', who_parent: 'Родитель', who_other: 'Другой человек',
-      s2_title: 'Биологический пол',
-      gender_m: 'Мужской', gender_f: 'Женский',
-      sage_title: 'Сколько вам лет?',
-      age_child: 'Ребёнок (0–12)', age_teen: 'Подросток (13–17)', age_adult: 'Взрослый (18–60)', age_senior: 'Пожилой (60+)',
-      s3_title: 'Где болит?', zone_hint: 'Нажмите на область',
-      zone_Kopf: 'Голова', zone_Brust: 'Грудь', zone_Bauch: 'Живот',
-      zone_LArm: 'Левая рука', zone_RArm: 'Правая рука', zone_LBein: 'Левая нога', zone_RBein: 'Правая нога',
-      fu_title_Kopf: 'Как началась головная боль?',
-      fu_title_Brust: 'Как ощущается боль в груди?',
-      fu_title_Bauch: 'Когда становится хуже?',
-      fu_title_arm: 'Что именно вы чувствуете?', fu_title_leg: 'Что именно вы чувствуете?',
-      f_sudden: 'Внезапно, как удар', f_gradual: 'Постепенно', f_vision: 'С нарушением зрения', f_nausea: 'С тошнотой',
-      f_pressure: 'Давление / сжатие', f_stabbing: 'Колющая', f_breath: 'С одышкой', f_radiates: 'Отдаёт в руку',
-      f_after_eat: 'После еды', f_waves: 'Волнами', f_same_spot: 'Всегда в одном месте', f_wanders: 'Перемещается',
-      f_numb: 'Онемение', f_burn: 'Жжение', f_swell: 'Отёк', f_fall: 'Возможное падение', f_burn_red: 'Жжение / покраснение',
-      s5_title: 'Насколько сильная боль?',
-      pain_1: 'Едва ощутимая (1/10)', pain_3: 'Слабая (3/10)', pain_5: 'Умеренная (5/10)',
-      pain_7: 'Сильная (7/10)', pain_9: 'Очень сильная (9/10)', pain_10: 'Невыносимая (10/10)',
-      s6_title: 'С какого времени?',
-      since_1h: 'Менее 1 часа', since_24h: '1–24 часа', since_7d: '2–7 дней', since_week: 'Более 1 недели',
-      wait_label: 'Ваш номер очереди', for_staff: 'Для персонала',
-      sum_patient: 'Пациент', sum_complaint: 'Жалоба', sum_symptom: 'Основной симптом',
-      sum_pain: 'Боль', sum_since: 'С', sum_causes: 'Возможные причины',
-      no_estimate: 'Оценка недоступна',
-      prio_urgent: 'Срочно', prio_likely: 'Вероятно', prio_possible: 'Возможно',
-      d_subarachnoid: 'Субарахноидальное кровоизлияние', d_migraine: 'Мигрень', d_hypertension_crisis: 'Гипертонический криз',
-      d_tension_headache: 'Головная боль напряжения', d_hypertension: 'Гипертония',
-      d_heart_attack: 'Инфаркт миокарда', d_angina: 'Стенокардия', d_pulmonary_embolism: 'Тромбоэмболия лёгочной артерии',
-      d_muscular: 'Мышечная причина', d_reflux: 'Рефлюкс', d_heart_problems: 'Проблемы с сердцем',
-      d_biliary_colic: 'Желчная колика', d_gastric_ulcer: 'Язва желудка', d_hepatitis: 'Гепатит',
-      d_kidney_stone: 'Камень в почке', d_bowel_obstruction: 'Кишечная непроходимость',
-      d_appendicitis: 'Аппендицит', d_gastritis: 'Гастрит', d_bowel_disease: 'Заболевание кишечника',
-    },
-    pl: {
-      next: 'Dalej →',
-      welcome_title: 'Witaj', welcome_sub: 'Wybierz swój język',
-      s1_title: 'Kim jesteś?',
-      who_self: 'Ja sam(a)', who_child: 'Moje dziecko', who_parent: 'Rodzic', who_other: 'Inna osoba',
-      s2_title: 'Płeć biologiczna',
-      gender_m: 'Męski', gender_f: 'Żeński',
-      sage_title: 'Ile lat?',
-      age_child: 'Dziecko (0–12)', age_teen: 'Nastolatek (13–17)', age_adult: 'Dorosły (18–60)', age_senior: 'Senior (60+)',
-      s3_title: 'Gdzie boli?', zone_hint: 'Dotknij obszar',
-      zone_Kopf: 'Głowa', zone_Brust: 'Klatka piersiowa', zone_Bauch: 'Brzuch',
-      zone_LArm: 'Lewe ramię', zone_RArm: 'Prawe ramię', zone_LBein: 'Lewa noga', zone_RBein: 'Prawa noga',
-      fu_title_Kopf: 'Jak zaczął się ból głowy?',
-      fu_title_Brust: 'Jak objawia się ból w klatce?',
-      fu_title_Bauch: 'Kiedy jest gorzej?',
-      fu_title_arm: 'Co dokładnie czujesz?', fu_title_leg: 'Co dokładnie czujesz?',
-      f_sudden: 'Nagle jak piorun', f_gradual: 'Stopniowo', f_vision: 'Z zaburzeniami widzenia', f_nausea: 'Z nudnościami',
-      f_pressure: 'Ucisk / ściskanie', f_stabbing: 'Kłujący', f_breath: 'Z dusznością', f_radiates: 'Promieniuje do ramienia',
-      f_after_eat: 'Po jedzeniu', f_waves: 'W falach / atakach', f_same_spot: 'Zawsze w tym samym miejscu', f_wanders: 'Wędruje',
-      f_numb: 'Drętwienie', f_burn: 'Pieczenie', f_swell: 'Obrzęk', f_fall: 'Możliwy upadek', f_burn_red: 'Pieczenie / zaczerwienienie',
-      s5_title: 'Jak silny jest ból?',
-      pain_1: 'Ledwo odczuwalny (1/10)', pain_3: 'Łagodny (3/10)', pain_5: 'Umiarkowany (5/10)',
-      pain_7: 'Silny (7/10)', pain_9: 'Bardzo silny (9/10)', pain_10: 'Nie do zniesienia (10/10)',
-      s6_title: 'Od kiedy?',
-      since_1h: 'Mniej niż 1 godzina', since_24h: '1–24 godziny', since_7d: '2–7 dni', since_week: 'Dłużej niż 1 tydzień',
-      wait_label: 'Twój numer kolejki', for_staff: 'Dla personelu',
-      sum_patient: 'Pacjent', sum_complaint: 'Dolegliwość', sum_symptom: 'Główny objaw',
-      sum_pain: 'Ból', sum_since: 'Od', sum_causes: 'Możliwe przyczyny',
-      no_estimate: 'Brak oceny',
-      prio_urgent: 'Pilne', prio_likely: 'Prawdopodobnie', prio_possible: 'Możliwe',
-      d_subarachnoid: 'Krwotok podpajęczynówkowy', d_migraine: 'Migrena', d_hypertension_crisis: 'Przełom nadciśnieniowy',
-      d_tension_headache: 'Napięciowy ból głowy', d_hypertension: 'Nadciśnienie',
-      d_heart_attack: 'Zawał serca', d_angina: 'Dławica piersiowa', d_pulmonary_embolism: 'Zatorowość płucna',
-      d_muscular: 'Przyczyna mięśniowa', d_reflux: 'Refluks', d_heart_problems: 'Problemy z sercem',
-      d_biliary_colic: 'Kolka żółciowa', d_gastric_ulcer: 'Wrzód żołądka', d_hepatitis: 'Zapalenie wątroby',
-      d_kidney_stone: 'Kamień nerkowy', d_bowel_obstruction: 'Niedrożność jelit',
-      d_appendicitis: 'Zapalenie wyrostka', d_gastritis: 'Zapalenie żołądka', d_bowel_disease: 'Choroba jelit',
-    },
   };
 
   function t(key) {
@@ -539,120 +364,6 @@
     'Linkes Bein': 'zone_LBein', 'Rechtes Bein': 'zone_RBein',
   };
 
-  const followupMap = {
-    'Kopf': {
-      titleKey: 'fu_title_Kopf',
-      options: [
-        { emoji: '⚡', i18nKey: 'f_sudden',   label: 'Plötzlich wie ein Blitz' },
-        { emoji: '🌊', i18nKey: 'f_gradual',  label: 'Schleichend' },
-        { emoji: '👁️', i18nKey: 'f_vision',   label: 'Mit Sehstörung' },
-        { emoji: '🤢', i18nKey: 'f_nausea',   label: 'Mit Übelkeit' },
-      ]
-    },
-    'Brust': {
-      titleKey: 'fu_title_Brust',
-      options: [
-        { emoji: '🪨', i18nKey: 'f_pressure', label: 'Druck / Enge' },
-        { emoji: '⚡', i18nKey: 'f_stabbing', label: 'Stechend' },
-        { emoji: '💨', i18nKey: 'f_breath',   label: 'Atemnot dazu' },
-        { emoji: '💪', i18nKey: 'f_radiates', label: 'Strahlt in Arm aus' },
-      ]
-    },
-    'Bauch': {
-      titleKey: 'fu_title_Bauch',
-      options: [
-        { emoji: '🍔', i18nKey: 'f_after_eat', label: 'Nach dem Essen' },
-        { emoji: '🌊', i18nKey: 'f_waves',     label: 'In Wellen / Attacken' },
-        { emoji: '📍', i18nKey: 'f_same_spot', label: 'Immer an selber Stelle' },
-        { emoji: '🔄', i18nKey: 'f_wanders',   label: 'Wandert umher' },
-      ]
-    },
-    'Linker Arm': {
-      titleKey: 'fu_title_arm',
-      options: [
-        { emoji: '⚡', i18nKey: 'f_numb',  label: 'Taubheit' },
-        { emoji: '🔥', i18nKey: 'f_burn',  label: 'Brennen' },
-        { emoji: '💥', i18nKey: 'f_swell', label: 'Schwellung' },
-        { emoji: '🦴', i18nKey: 'f_fall',  label: 'Möglicher Sturz' },
-      ]
-    },
-    'Rechter Arm': {
-      titleKey: 'fu_title_arm',
-      options: [
-        { emoji: '⚡', i18nKey: 'f_numb',  label: 'Taubheit' },
-        { emoji: '🔥', i18nKey: 'f_burn',  label: 'Brennen' },
-        { emoji: '💥', i18nKey: 'f_swell', label: 'Schwellung' },
-        { emoji: '🦴', i18nKey: 'f_fall',  label: 'Möglicher Sturz' },
-      ]
-    },
-    'Linkes Bein': {
-      titleKey: 'fu_title_leg',
-      options: [
-        { emoji: '💥', i18nKey: 'f_swell',    label: 'Schwellung' },
-        { emoji: '🔥', i18nKey: 'f_burn_red', label: 'Brennen / Röte' },
-        { emoji: '⚡', i18nKey: 'f_numb',     label: 'Taubheit' },
-        { emoji: '🦴', i18nKey: 'f_fall',     label: 'Möglicher Sturz' },
-      ]
-    },
-    'Rechtes Bein': {
-      titleKey: 'fu_title_leg',
-      options: [
-        { emoji: '💥', i18nKey: 'f_swell',    label: 'Schwellung' },
-        { emoji: '🔥', i18nKey: 'f_burn_red', label: 'Brennen / Röte' },
-        { emoji: '⚡', i18nKey: 'f_numb',     label: 'Taubheit' },
-        { emoji: '🦴', i18nKey: 'f_fall',     label: 'Möglicher Sturz' },
-      ]
-    },
-  };
-
-  const labelKeyMap = {};
-  Object.values(followupMap).forEach(zone => {
-    zone.options.forEach(opt => { labelKeyMap[opt.label] = opt.i18nKey; });
-  });
-
-  const diagnoseMap = {
-    'Kopf': {
-      'Plötzlich wie ein Blitz': [
-        { label: 'd_subarachnoid',        prio: 'prio_urgent' },
-        { label: 'd_migraine',            prio: 'prio_possible' },
-        { label: 'd_hypertension_crisis', prio: 'prio_possible' },
-      ],
-      'default': [
-        { label: 'd_migraine',        prio: 'prio_likely' },
-        { label: 'd_tension_headache', prio: 'prio_possible' },
-        { label: 'd_hypertension',    prio: 'prio_possible' },
-      ]
-    },
-    'Brust': {
-      'Druck / Enge': [
-        { label: 'd_heart_attack',       prio: 'prio_urgent' },
-        { label: 'd_angina',             prio: 'prio_likely' },
-        { label: 'd_pulmonary_embolism', prio: 'prio_possible' },
-      ],
-      'default': [
-        { label: 'd_muscular',       prio: 'prio_likely' },
-        { label: 'd_reflux',         prio: 'prio_possible' },
-        { label: 'd_heart_problems', prio: 'prio_possible' },
-      ]
-    },
-    'Bauch': {
-      'Nach dem Essen': [
-        { label: 'd_biliary_colic', prio: 'prio_likely' },
-        { label: 'd_gastric_ulcer', prio: 'prio_possible' },
-        { label: 'd_hepatitis',     prio: 'prio_possible' },
-      ],
-      'In Wellen / Attacken': [
-        { label: 'd_biliary_colic',     prio: 'prio_likely' },
-        { label: 'd_kidney_stone',      prio: 'prio_likely' },
-        { label: 'd_bowel_obstruction', prio: 'prio_possible' },
-      ],
-      'default': [
-        { label: 'd_appendicitis', prio: 'prio_likely' },
-        { label: 'd_gastritis',    prio: 'prio_possible' },
-        { label: 'd_bowel_disease',prio: 'prio_possible' },
-      ]
-    },
-  };
 
   function goto(n) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -674,11 +385,42 @@
     }
   }
 
-  function selectLang(el) {
+  function showLoading(on) {
+    document.getElementById('loading-overlay').classList.toggle('active', on);
+  }
+
+  async function selectLang(el) {
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
-    state.lang = el.dataset.lang;
-    applyTranslations();
+    const lang = el.dataset.lang;
+
+    if (lang === 'de' || T[lang]) {
+      state.lang = lang;
+      applyTranslations();
+      return;
+    }
+
+    showLoading(true);
+    try {
+      const keys = Object.keys(T.de);
+      const texts = Object.values(T.de);
+      const resp = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'translate', texts, targetLang: lang })
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.translated) throw new Error(data.error || 'API error');
+      T[lang] = {};
+      keys.forEach((k, i) => { T[lang][k] = data.translated[i]; });
+      state.lang = lang;
+      applyTranslations();
+    } catch (err) {
+      console.error('Translation failed:', err);
+      state.lang = lang;
+    } finally {
+      showLoading(false);
+    }
   }
 
   function selectOne(el, key, value) {
@@ -728,30 +470,66 @@
     document.getElementById('next4').disabled = false;
   }
 
-  function gotoFollowup() {
-    const data = followupMap[state.zone];
-    if (!data) { goto(6); return; }
-    document.getElementById('followup-title').textContent = t(data.titleKey);
-    const grid = document.getElementById('followup-grid');
-    grid.innerHTML = '';
-    state.followup = [];
-    data.options.forEach(opt => {
-      const btn = document.createElement('button');
-      btn.className = 'option-btn';
-      btn.innerHTML = `<span class="emoji">${opt.emoji}</span><span class="label">${t(opt.i18nKey)}</span>`;
-      btn.onclick = function() {
-        btn.classList.toggle('selected');
-        if (btn.classList.contains('selected')) {
-          state.followup.push(opt.label);
-        } else {
-          state.followup = state.followup.filter(f => f !== opt.label);
-        }
-        document.getElementById('next5').disabled = state.followup.length === 0;
-      };
-      grid.appendChild(btn);
-    });
-    document.getElementById('next5').disabled = true;
-    goto(5);
+  async function gotoFollowup() {
+    showLoading(true);
+    try {
+      const bodyPart = T.de[zoneKey[state.zone]];
+      const resp = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'questions', bodyPart, lang: state.lang })
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.questions) throw new Error(data.error || 'API error');
+
+      document.getElementById('followup-title').textContent = t(zoneKey[state.zone]);
+      const grid = document.getElementById('followup-grid');
+      grid.innerHTML = '';
+      state.followup = [];
+      data.questions.forEach(q => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="emoji">${q.emoji}</span><span class="label">${q.label}</span>`;
+        btn.onclick = function() {
+          btn.classList.toggle('selected');
+          if (btn.classList.contains('selected')) {
+            state.followup.push(q.label);
+          } else {
+            state.followup = state.followup.filter(f => f !== q.label);
+          }
+          document.getElementById('next5').disabled = state.followup.length === 0;
+        };
+        grid.appendChild(btn);
+      });
+      document.getElementById('next5').disabled = true;
+      goto(5);
+    } catch (err) {
+      console.error('Questions failed:', err);
+      goto(6);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  async function gotoFromFollowup() {
+    showLoading(true);
+    try {
+      const bodyPart = T.de[zoneKey[state.zone]];
+      const resp = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'diagnose', bodyPart, symptoms: state.followup, lang: state.lang })
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.diagnoses) throw new Error(data.error || 'API error');
+      state.diagnoses = data.diagnoses;
+    } catch (err) {
+      console.error('Diagnose failed:', err);
+      state.diagnoses = [];
+    } finally {
+      showLoading(false);
+      goto(6);
+    }
   }
 
   function selectPain(el, key) {
@@ -761,25 +539,14 @@
     document.getElementById('next6').disabled = false;
   }
 
-  function getDiagnose() {
-    const zoneData = diagnoseMap[state.zone];
-    if (!zoneData) return `<span style="color:#999">${t('no_estimate')}</span>`;
-    const seen = new Set();
-    const entries = [];
-    const followups = state.followup.length > 0 ? state.followup : ['default'];
-    for (const f of followups) {
-      const list = zoneData[f] || zoneData['default'];
-      if (list) {
-        for (const e of list) {
-          if (!seen.has(e.label)) { seen.add(e.label); entries.push(e); }
-        }
-      }
+  function renderDiagnoses() {
+    if (!state.diagnoses || state.diagnoses.length === 0) {
+      return `<span style="color:#999">${t('no_estimate')}</span>`;
     }
-    if (entries.length === 0) return `<span style="color:#999">${t('no_estimate')}</span>`;
-    return entries.map((e, i) =>
+    return state.diagnoses.map((d, i) =>
       `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.9rem;">
-        <span>${i + 1}. ${t(e.label)}</span>
-        <span style="color:#999">${t(e.prio)}</span>
+        <span>${i + 1}. ${d.name}</span>
+        <span style="color:#999">${d.likelihood}</span>
       </div>`
     ).join('<hr style="border:none;border-top:1px solid #eee;">');
   }
@@ -791,10 +558,10 @@
     document.getElementById('sum-who').textContent = [genderAge, t(state.who)].filter(Boolean).join(' · ') || '–';
     document.getElementById('sum-zone').textContent = state.zone ? t(zoneKey[state.zone]) : '–';
     document.getElementById('sum-followup').textContent = state.followup.length > 0
-      ? state.followup.map(f => t(labelKeyMap[f] || f)).join(', ') : '–';
+      ? state.followup.join(', ') : '–';
     document.getElementById('sum-pain').textContent = state.pain ? t(state.pain) : '–';
     document.getElementById('sum-since').textContent = state.since ? t(state.since) : '–';
-    document.getElementById('sum-diagnose').innerHTML = getDiagnose();
+    document.getElementById('sum-diagnose').innerHTML = renderDiagnoses();
     goto(8);
   }
 
@@ -805,6 +572,7 @@
     state.who = null;
     state.zone = null;
     state.followup = [];
+    state.diagnoses = [];
     state.pain = null;
     state.since = null;
 

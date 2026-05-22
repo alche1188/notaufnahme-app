@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/translate.js",
+      "src": "api/gemini.js",
       "use": "@vercel/node"
     },
     {
