@@ -159,13 +159,19 @@
     <div class="screen-title" data-i18n="s1_title">Wer bist du?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectOne(this,'who','who_self')">
-        <span class="emoji">👨👩</span><span class="label" data-i18n="who_self">Ich selbst</span>
+        <span class="emoji">👤</span><span class="label" data-i18n="who_self">Ich selbst</span>
       </button>
       <button class="option-btn" onclick="selectOne(this,'who','who_child')">
         <span class="emoji">👶</span><span class="label" data-i18n="who_child">Mein Kind</span>
       </button>
       <button class="option-btn" onclick="selectOne(this,'who','who_parent')">
         <span class="emoji">👴👵</span><span class="label" data-i18n="who_parent">Elternteil</span>
+      </button>
+      <button class="option-btn" onclick="selectOne(this,'who','who_partner')">
+        <span class="emoji">💑</span><span class="label" data-i18n="who_partner">Partner / Ehepartner</span>
+      </button>
+      <button class="option-btn" onclick="selectOne(this,'who','who_family')">
+        <span class="emoji">👨‍👩‍👧‍👦</span><span class="label" data-i18n="who_family">Familienmitglied</span>
       </button>
       <button class="option-btn" onclick="selectOne(this,'who','who_other')">
         <span class="emoji">👥</span><span class="label" data-i18n="who_other">Andere Person</span>
@@ -196,17 +202,23 @@
     <div class="progress" id="prog3"></div>
     <div class="screen-title" data-i18n="sage_title">Wie alt?</div>
     <div class="grid">
+      <button class="option-btn" onclick="selectAge(this,'age_infant')">
+        <span class="emoji">👶</span><span class="label" data-i18n="age_infant">Säugling (0–1)</span>
+      </button>
       <button class="option-btn" onclick="selectAge(this,'age_child')">
-        <span class="emoji">👦👧</span><span class="label" data-i18n="age_child">Kind (0–12)</span>
+        <span class="emoji">🧒</span><span class="label" data-i18n="age_child">Kind (2–12)</span>
       </button>
       <button class="option-btn" onclick="selectAge(this,'age_teen')">
-        <span class="emoji">🧑👩</span><span class="label" data-i18n="age_teen">Jugendlich (13–17)</span>
+        <span class="emoji">🧑</span><span class="label" data-i18n="age_teen">Jugendlich (13–17)</span>
       </button>
       <button class="option-btn" onclick="selectAge(this,'age_adult')">
-        <span class="emoji">👨👩</span><span class="label" data-i18n="age_adult">Erwachsen (18–60)</span>
+        <span class="emoji">👨👩</span><span class="label" data-i18n="age_adult">Erwachsen (18–64)</span>
       </button>
       <button class="option-btn" onclick="selectAge(this,'age_senior')">
-        <span class="emoji">👴👵</span><span class="label" data-i18n="age_senior">Senior (60+)</span>
+        <span class="emoji">👴👵</span><span class="label" data-i18n="age_senior">Senior (65–79)</span>
+      </button>
+      <button class="option-btn" onclick="selectAge(this,'age_elderly')">
+        <span class="emoji">🧓</span><span class="label" data-i18n="age_elderly">Hochbetagt (80+)</span>
       </button>
     </div>
     <button class="next-btn" id="next3" disabled onclick="goto(4)" data-i18n="next">Weiter →</button>
@@ -287,17 +299,23 @@
     <div class="progress" id="prog8"></div>
     <div class="screen-title" data-i18n="s6_title">Seit wann?</div>
     <div class="grid">
-      <button class="option-btn" onclick="selectOne(this,'since','since_1h')">
-        <span class="emoji">⏱️</span><span class="label" data-i18n="since_1h">Weniger als 1 Stunde</span>
+      <button class="option-btn" onclick="selectOne(this,'since','since_min')">
+        <span class="emoji">⏱️</span><span class="label" data-i18n="since_min">Minuten (&lt; 1h)</span>
       </button>
-      <button class="option-btn" onclick="selectOne(this,'since','since_24h')">
-        <span class="emoji">🕐</span><span class="label" data-i18n="since_24h">1–24 Stunden</span>
+      <button class="option-btn" onclick="selectOne(this,'since','since_hours')">
+        <span class="emoji">🕐</span><span class="label" data-i18n="since_hours">Stunden (1–6h)</span>
       </button>
-      <button class="option-btn" onclick="selectOne(this,'since','since_7d')">
-        <span class="emoji">📅</span><span class="label" data-i18n="since_7d">2–7 Tage</span>
+      <button class="option-btn" onclick="selectOne(this,'since','since_today')">
+        <span class="emoji">🌙</span><span class="label" data-i18n="since_today">Heute (6–24h)</span>
       </button>
-      <button class="option-btn" onclick="selectOne(this,'since','since_week')">
-        <span class="emoji">🗓️</span><span class="label" data-i18n="since_week">Länger als 1 Woche</span>
+      <button class="option-btn" onclick="selectOne(this,'since','since_days')">
+        <span class="emoji">📅</span><span class="label" data-i18n="since_days">Tage (2–7)</span>
+      </button>
+      <button class="option-btn" onclick="selectOne(this,'since','since_weeks')">
+        <span class="emoji">🗓️</span><span class="label" data-i18n="since_weeks">Wochen (1–4)</span>
+      </button>
+      <button class="option-btn" onclick="selectOne(this,'since','since_long')">
+        <span class="emoji">📆</span><span class="label" data-i18n="since_long">Länger (&gt; 1 Monat)</span>
       </button>
     </div>
     <button class="next-btn" id="next8" disabled onclick="showSummary()" data-i18n="next">Weiter →</button>
@@ -351,11 +369,13 @@
       next: 'Weiter →',
       welcome_title: 'Willkommen', welcome_sub: 'Bitte wähle deine Sprache',
       s1_title: 'Wer bist du?',
-      who_self: 'Ich selbst', who_child: 'Mein Kind', who_parent: 'Elternteil', who_other: 'Andere Person',
+      who_self: 'Ich selbst', who_child: 'Mein Kind', who_parent: 'Elternteil',
+      who_partner: 'Partner / Ehepartner', who_family: 'Familienmitglied', who_other: 'Andere Person',
       s2_title: 'Biologisches Geschlecht',
       gender_m: 'Männlich', gender_f: 'Weiblich',
       sage_title: 'Wie alt?',
-      age_child: 'Kind (0–12)', age_teen: 'Jugendlich (13–17)', age_adult: 'Erwachsen (18–60)', age_senior: 'Senior (60+)',
+      age_infant: 'Säugling (0–1)', age_child: 'Kind (2–12)', age_teen: 'Jugendlich (13–17)',
+      age_adult: 'Erwachsen (18–64)', age_senior: 'Senior (65–79)', age_elderly: 'Hochbetagt (80+)',
       s3_title: 'Wo ist das Problem?', zone_hint: 'Bereiche antippen (Mehrfachauswahl)',
       zone_Kopf: 'Kopf', zone_Hals: 'Hals', zone_Brust: 'Brust', zone_Bauch: 'Bauch', zone_Unterbauch: 'Unterbauch',
       zone_LArm: 'Linker Arm', zone_RArm: 'Rechter Arm', zone_LBein: 'Linkes Bein', zone_RBein: 'Rechtes Bein',
@@ -370,11 +390,12 @@
       f_after_eat: 'Nach dem Essen', f_waves: 'In Wellen / Attacken', f_same_spot: 'Immer an selber Stelle', f_wanders: 'Wandert umher',
       f_numb: 'Taubheit', f_burn: 'Brennen', f_swell: 'Schwellung', f_fall: 'Möglicher Sturz', f_burn_red: 'Brennen / Röte',
       sa_title: 'Wie fühlen Sie sich?',
-      cond_normal: 'Normal / Wie immer', cond_unwell: 'Unwohl', cond_bad: 'Schlecht', cond_severe: 'Kaum auszuhalten', cond_emergency: 'Notfall',
+      cond_normal: 'Normal', cond_unwell: 'Angeschlagen', cond_bad: 'Krank', cond_severe: 'Schlecht', cond_emergency: 'Notfall',
       sb_title: 'Wie stark sind die Schmerzen?',
-      pain_none: 'Keine', pain_mild: 'Leicht', pain_medium: 'Mittel', pain_strong: 'Stark', pain_unbearable: 'Unerträglich',
+      pain_none: 'Keine (0)', pain_mild: 'Leicht (1–3)', pain_medium: 'Mittel (4–6)', pain_strong: 'Stark (7–9)', pain_unbearable: 'Unerträglich (10)',
       s6_title: 'Seit wann?',
-      since_1h: 'Weniger als 1 Stunde', since_24h: '1–24 Stunden', since_7d: '2–7 Tage', since_week: 'Länger als 1 Woche',
+      since_min: 'Minuten (< 1h)', since_hours: 'Stunden (1–6h)', since_today: 'Heute (6–24h)',
+      since_days: 'Tage (2–7)', since_weeks: 'Wochen (1–4)', since_long: 'Länger (> 1 Monat)',
       wait_label: 'Ihre Wartenummer', for_staff: 'Für das Personal',
       sum_patient: 'Patient', sum_complaint: 'Beschwerden', sum_symptom: 'Leitsymptom',
       sum_condition: 'Zustand', sum_pain: 'Schmerz', sum_since: 'Seit', sum_causes: 'Mögliche Ursachen',
