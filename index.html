@@ -73,8 +73,9 @@
     .lang-btn:hover { border-color: #90CAF9; background: #E3F2FD; }
     .lang-btn.selected { border-color: #2196F3; background: #E3F2FD; }
 
-    .body-wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
-    .body-map { position: relative; width: 160px; height: 320px; }
+    .body-wrap { display: flex; justify-content: center; gap: 12px; align-items: flex-start; margin-bottom: 1rem; }
+    .body-map { position: relative; width: 140px; height: 280px; }
+    .body-label { font-size: 0.75rem; color: #888; text-align: center; margin-bottom: 4px; }
     .zone {
       position: absolute; border-radius: 10px; border: 2px solid #90CAF9;
       background: #E3F2FD; cursor: pointer; display: flex; align-items: center;
@@ -213,14 +214,26 @@
     <div class="progress" id="prog4"></div>
     <div class="screen-title" data-i18n="s3_title">Wo tut es weh?</div>
     <div class="body-wrap">
-      <div class="body-map">
-        <div class="zone" style="left:40px;top:0;width:80px;height:70px;" onclick="selectZone(this,'Kopf')">😣</div>
-        <div class="zone" style="left:30px;top:78px;width:100px;height:60px;" onclick="selectZone(this,'Brust')">💓</div>
-        <div class="zone" style="left:30px;top:146px;width:100px;height:60px;" onclick="selectZone(this,'Bauch')">🫄</div>
-        <div class="zone" style="left:0;top:78px;width:28px;height:80px;" onclick="selectZone(this,'Linker Arm')">💪</div>
-        <div class="zone" style="right:0;top:78px;width:28px;height:80px;" onclick="selectZone(this,'Rechter Arm')">💪</div>
-        <div class="zone" style="left:30px;top:214px;width:44px;height:100px;" onclick="selectZone(this,'Linkes Bein')">🦵</div>
-        <div class="zone" style="right:30px;top:214px;width:44px;height:100px;" onclick="selectZone(this,'Rechtes Bein')">🦵</div>
+      <div>
+        <div class="body-label" data-i18n="body_front">Vorne</div>
+        <div class="body-map">
+          <div class="zone" style="left:35px;top:0;width:70px;height:61px;" onclick="selectZone(this,'Kopf')">😣</div>
+          <div class="zone" style="left:26px;top:69px;width:88px;height:53px;" onclick="selectZone(this,'Brust')">💓</div>
+          <div class="zone" style="left:26px;top:130px;width:88px;height:53px;" onclick="selectZone(this,'Bauch')">🫄</div>
+          <div class="zone" style="left:0;top:69px;width:24px;height:70px;" onclick="selectZone(this,'Linker Arm')">💪</div>
+          <div class="zone" style="right:0;top:69px;width:24px;height:70px;" onclick="selectZone(this,'Rechter Arm')">💪</div>
+          <div class="zone" style="left:26px;top:190px;width:38px;height:88px;" onclick="selectZone(this,'Linkes Bein')">🦵</div>
+          <div class="zone" style="right:26px;top:190px;width:38px;height:88px;" onclick="selectZone(this,'Rechtes Bein')">🦵</div>
+        </div>
+      </div>
+      <div>
+        <div class="body-label" data-i18n="body_back">Hinten</div>
+        <div class="body-map">
+          <div class="zone" style="left:44px;top:0;width:52px;height:52px;" onclick="selectZone(this,'Nacken')">🦴</div>
+          <div class="zone" style="left:15px;top:60px;width:110px;height:57px;" onclick="selectZone(this,'Oberer Rücken')">💆</div>
+          <div class="zone" style="left:15px;top:125px;width:110px;height:57px;" onclick="selectZone(this,'Unterer Rücken')">🔙</div>
+          <div class="zone" style="left:35px;top:190px;width:70px;height:70px;" onclick="selectZone(this,'Gesäß')">🪑</div>
+        </div>
       </div>
     </div>
     <div id="zone-hint" style="text-align:center;font-size:0.85rem;color:#999;margin-bottom:0.5rem;" data-i18n="zone_hint">Bereich antippen</div>
@@ -307,7 +320,7 @@
 <script>
   const state = {
     lang: 'de', gender: null, age: null, who: null,
-    zone: null, followup: [], pain: null, since: null, diagnoses: []
+    zones: [], followup: [], pain: null, since: null, diagnoses: []
   };
 
   const T = {
@@ -320,9 +333,11 @@
       gender_m: 'Männlich', gender_f: 'Weiblich',
       sage_title: 'Wie alt?',
       age_child: 'Kind (0–12)', age_teen: 'Jugendlich (13–17)', age_adult: 'Erwachsen (18–60)', age_senior: 'Senior (60+)',
-      s3_title: 'Wo tut es weh?', zone_hint: 'Bereich antippen',
+      s3_title: 'Wo tut es weh?', zone_hint: 'Bereiche antippen (Mehrfachauswahl)',
       zone_Kopf: 'Kopf', zone_Brust: 'Brust', zone_Bauch: 'Bauch',
       zone_LArm: 'Linker Arm', zone_RArm: 'Rechter Arm', zone_LBein: 'Linkes Bein', zone_RBein: 'Rechtes Bein',
+      zone_Nacken: 'Nacken', zone_OberR: 'Oberer Rücken', zone_UnterR: 'Unterer Rücken', zone_Gesaess: 'Gesäß',
+      body_front: 'Vorne', body_back: 'Hinten',
       fu_title_Kopf: 'Wie kam der Kopfschmerz?',
       fu_title_Brust: 'Wie fühlt sich der Brustschmerz an?',
       fu_title_Bauch: 'Wann ist es schlimmer?',
@@ -366,6 +381,8 @@
     'Kopf': 'zone_Kopf', 'Brust': 'zone_Brust', 'Bauch': 'zone_Bauch',
     'Linker Arm': 'zone_LArm', 'Rechter Arm': 'zone_RArm',
     'Linkes Bein': 'zone_LBein', 'Rechtes Bein': 'zone_RBein',
+    'Nacken': 'zone_Nacken', 'Oberer Rücken': 'zone_OberR',
+    'Unterer Rücken': 'zone_UnterR', 'Gesäß': 'zone_Gesaess',
   };
 
 
@@ -467,17 +484,22 @@
   }
 
   function selectZone(el, zone) {
-    document.querySelectorAll('.zone').forEach(z => z.classList.remove('selected'));
-    el.classList.add('selected');
-    state.zone = zone;
-    document.getElementById('zone-hint').textContent = t(zoneKey[zone]);
-    document.getElementById('next4').disabled = false;
+    el.classList.toggle('selected');
+    if (el.classList.contains('selected')) {
+      state.zones.push(zone);
+    } else {
+      state.zones = state.zones.filter(z => z !== zone);
+    }
+    document.getElementById('zone-hint').textContent = state.zones.length > 0
+      ? state.zones.map(z => t(zoneKey[z])).join(', ')
+      : t('zone_hint');
+    document.getElementById('next4').disabled = state.zones.length === 0;
   }
 
   async function gotoFollowup() {
     showLoading(true);
     try {
-      const bodyPart = T.de[zoneKey[state.zone]];
+      const bodyPart = state.zones.map(z => T.de[zoneKey[z]]).join(', ');
       const resp = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -486,7 +508,7 @@
       const data = await resp.json();
       if (!resp.ok || !data.questions) throw new Error(data.error || 'API error');
 
-      document.getElementById('followup-title').textContent = t(zoneKey[state.zone]);
+      document.getElementById('followup-title').textContent = state.zones.map(z => t(zoneKey[z])).join(', ');
       const grid = document.getElementById('followup-grid');
       grid.innerHTML = '';
       state.followup = [];
@@ -518,7 +540,7 @@
   async function gotoFromFollowup() {
     showLoading(true);
     try {
-      const bodyPart = T.de[zoneKey[state.zone]];
+      const bodyPart = state.zones.map(z => T.de[zoneKey[z]]).join(', ');
       const resp = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -560,7 +582,8 @@
     document.getElementById('wait-number').textContent = num;
     const genderAge = [state.gender, state.age].filter(Boolean).map(k => t(k)).join(' · ');
     document.getElementById('sum-who').textContent = [genderAge, t(state.who)].filter(Boolean).join(' · ') || '–';
-    document.getElementById('sum-zone').textContent = state.zone ? t(zoneKey[state.zone]) : '–';
+    document.getElementById('sum-zone').textContent = state.zones.length > 0
+      ? state.zones.map(z => t(zoneKey[z])).join(', ') : '–';
     document.getElementById('sum-followup').textContent = state.followup.length > 0
       ? state.followup.join(', ') : '–';
     document.getElementById('sum-pain').textContent = state.pain ? t(state.pain) : '–';
@@ -574,7 +597,7 @@
     state.gender = null;
     state.age = null;
     state.who = null;
-    state.zone = null;
+    state.zones = [];
     state.followup = [];
     state.diagnoses = [];
     state.pain = null;
