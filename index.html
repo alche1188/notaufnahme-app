@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notaufnahme</title>
   <style>
+    :root {
+      --primary-color: #2196F3;
+      --primary-dark: #1565C0;
+      --primary-rgb: 33, 150, 243;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -34,32 +40,31 @@
 
     .progress { display: flex; gap: 6px; margin-bottom: 2rem; }
     .progress-dot {
-      height: 6px; border-radius: 3px; background: #e0e0e0;
+      height: 8px; border-radius: 4px; background: #e0e0e0;
       flex: 1; transition: background 0.3s;
     }
-    .progress-dot.done { background: #2196F3; }
+    .progress-dot.done { background: var(--primary-color); }
 
-    .screen-title { font-size: 1.1rem; color: #555; text-align: center; margin-bottom: 1.5rem; }
+    .screen-title { font-size: 1.3rem; color: #555; text-align: center; margin-bottom: 1.5rem; }
 
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: auto; }
 
     .option-btn {
       background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 16px;
-      padding: 1rem 0.5rem; cursor: pointer; display: flex; flex-direction: column;
+      padding: 1.25rem 0.5rem; cursor: pointer; display: flex; flex-direction: column;
       align-items: center; gap: 8px; transition: all 0.15s;
     }
-    .option-btn:hover { border-color: #90CAF9; background: #E3F2FD; }
-    .option-btn.selected { border-color: #2196F3; background: #E3F2FD; }
-    .option-btn .emoji { font-size: 2.5rem; }
-    .option-btn .label { font-size: 0.8rem; color: #555; text-align: center; }
+    .option-btn:hover { border-color: rgba(var(--primary-rgb), 0.5); background: rgba(var(--primary-rgb), 0.12); }
+    .option-btn.selected { border-color: var(--primary-color); background: rgba(var(--primary-rgb), 0.12); }
+    .option-btn .emoji { font-size: 2.8rem; }
+    .option-btn .label { font-size: 0.95rem; color: #555; text-align: center; }
 
-    #followup-grid { grid-template-columns: 1fr 1fr; }
-    #followup-grid .option-btn { padding: 0.75rem 0.5rem; }
-    #followup-grid .option-btn .emoji { font-size: 2rem; }
+    #round1-grid .option-btn, #round2-grid .option-btn { padding: 0.9rem 0.5rem; }
+    #round1-grid .option-btn .emoji, #round2-grid .option-btn .emoji { font-size: 2.2rem; }
 
     .next-btn {
-      margin-top: 1.5rem; background: #2196F3; color: white; border: none;
-      border-radius: 14px; padding: 1rem; font-size: 1rem; cursor: pointer;
+      margin-top: 1.5rem; background: var(--primary-color); color: white; border: none;
+      border-radius: 14px; padding: 1rem; font-size: 1.1rem; cursor: pointer;
       width: 100%; transition: opacity 0.15s;
     }
     .next-btn:disabled { opacity: 0.3; cursor: default; }
@@ -70,26 +75,16 @@
       background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 14px;
       padding: 0.85rem; cursor: pointer; font-size: 0.95rem; transition: all 0.15s;
     }
-    .lang-btn:hover { border-color: #90CAF9; background: #E3F2FD; }
-    .lang-btn.selected { border-color: #2196F3; background: #E3F2FD; }
+    .lang-btn:hover { border-color: rgba(var(--primary-rgb), 0.5); background: rgba(var(--primary-rgb), 0.12); }
+    .lang-btn.selected { border-color: var(--primary-color); background: rgba(var(--primary-rgb), 0.12); }
 
-    .body-wrap { display: flex; justify-content: center; gap: 12px; align-items: flex-start; margin-bottom: 1rem; }
-    .body-map { position: relative; width: 140px; height: 280px; }
-    .body-label { font-size: 0.75rem; color: #888; text-align: center; margin-bottom: 4px; }
-    .zone {
-      position: absolute; border-radius: 10px; border: 2px solid #90CAF9;
-      background: #E3F2FD; cursor: pointer; display: flex; align-items: center;
-      justify-content: center; font-size: 1.2rem; transition: all 0.15s;
-    }
-    .zone:hover { background: #BBDEFB; }
-    .zone.selected { background: #2196F3; border-color: #1565C0; }
 
 
     .summary-card { background: #f8f9fa; border-radius: 14px; padding: 1rem; margin-bottom: 10px; }
-    .summary-label { font-size: 0.75rem; color: #999; margin-bottom: 4px; text-transform: uppercase; }
-    .summary-value { font-size: 1rem; color: #222; font-weight: 500; }
+    .summary-label { font-size: 0.85rem; color: #999; margin-bottom: 4px; text-transform: uppercase; }
+    .summary-value { font-size: 1.1rem; color: #222; font-weight: 500; }
 
-    .number-badge { font-size: 5rem; font-weight: 700; color: #2196F3; text-align: center; margin: 1rem 0; }
+    .number-badge { font-size: 5rem; font-weight: 700; color: var(--primary-color); text-align: center; margin: 1rem 0; }
     .number-label { text-align: center; color: #555; font-size: 0.95rem; margin-bottom: 1.5rem; }
 
     .welcome-icon { font-size: 5rem; text-align: center; margin-bottom: 1rem; }
@@ -103,8 +98,8 @@
       align-items: center; gap: 8px; transition: background 0.15s, border-color 0.15s;
       font-size: 1rem; color: #555;
     }
-    .bio-gender-btn:hover { background: #E3F2FD; }
-    .bio-gender-btn.selected { background: #E3F2FD; }
+    .bio-gender-btn:hover { background: rgba(var(--primary-rgb), 0.12); }
+    .bio-gender-btn.selected { background: rgba(var(--primary-rgb), 0.12); }
     .bio-gender-btn .symbol { font-size: 3.5rem; line-height: 1; font-weight: bold; }
 
     .loading-overlay {
@@ -115,7 +110,7 @@
     .loading-overlay.active { display: flex; }
     .spinner {
       width: 36px; height: 36px; border: 4px solid #e0e0e0;
-      border-top-color: #2196F3; border-radius: 50%;
+      border-top-color: var(--primary-color); border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -128,7 +123,12 @@
   <!-- Screen 0: Willkommen -->
   <div class="screen active" id="s0">
     <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
-      <div class="welcome-icon">🏥</div>
+      <div style="text-align:center; margin-bottom:1rem;">
+        <svg width="120" height="48" viewBox="0 0 120 48" xmlns="http://www.w3.org/2000/svg">
+          <rect width="120" height="48" rx="10" fill="#E3F2FD"/>
+          <text x="60" y="31" font-family="Segoe UI, sans-serif" font-size="18" font-weight="600" fill="#2196F3" text-anchor="middle">LOGO</text>
+        </svg>
+      </div>
       <div class="welcome-title" data-i18n="welcome_title">Willkommen</div>
       <div class="welcome-sub" data-i18n="welcome_sub">Bitte wähle deine Sprache</div>
       <div class="lang-grid">
@@ -175,8 +175,8 @@
     <div class="progress" id="prog2"></div>
     <div class="screen-title" data-i18n="s2_title">Biologisches Geschlecht</div>
     <div class="bio-gender-row">
-      <button class="bio-gender-btn" data-color="#2196F3" onclick="selectGender2(this,'gender_m')">
-        <span class="symbol" style="color:#2196F3">♂</span>
+      <button class="bio-gender-btn" data-color="var(--primary-color)" onclick="selectGender2(this,'gender_m')">
+        <span class="symbol" style="color:var(--primary-color)">♂</span>
         <span data-i18n="gender_m">Männlich</span>
       </button>
       <button class="bio-gender-btn" data-color="#E91E8C" onclick="selectGender2(this,'gender_f')">
@@ -218,47 +218,32 @@
   <div class="screen" id="s4">
     <div class="progress" id="prog4"></div>
     <div class="screen-title" data-i18n="s3_title">Wo ist das Problem?</div>
-    <div class="body-wrap">
-      <div>
-        <div class="body-label" data-i18n="body_front">Vorne</div>
-        <div class="body-map">
-          <div class="zone" style="left:35px;top:0;width:70px;height:50px;" onclick="selectZone(this,'Kopf')">😣</div>
-          <div class="zone" style="left:46px;top:52px;width:48px;height:18px;" onclick="selectZone(this,'Hals')">🗣️</div>
-          <div class="zone" style="left:26px;top:72px;width:88px;height:46px;" onclick="selectZone(this,'Brust')">💓</div>
-          <div class="zone" style="left:26px;top:120px;width:88px;height:44px;" onclick="selectZone(this,'Bauch')">🫄</div>
-          <div class="zone" style="left:26px;top:166px;width:88px;height:40px;" onclick="selectZone(this,'Unterbauch')">🩻</div>
-          <div class="zone" style="left:0;top:72px;width:24px;height:92px;" onclick="selectZone(this,'Linker Arm')">💪</div>
-          <div class="zone" style="right:0;top:72px;width:24px;height:92px;" onclick="selectZone(this,'Rechter Arm')">💪</div>
-          <div class="zone" style="left:26px;top:212px;width:38px;height:68px;" onclick="selectZone(this,'Linkes Bein')">🦵</div>
-          <div class="zone" style="right:26px;top:212px;width:38px;height:68px;" onclick="selectZone(this,'Rechtes Bein')">🦵</div>
-        </div>
-      </div>
-      <div>
-        <div class="body-label" data-i18n="body_back">Hinten</div>
-        <div class="body-map">
-          <div class="zone" style="left:44px;top:0;width:52px;height:50px;" onclick="selectZone(this,'Hinterkopf')">🦴</div>
-          <div class="zone" style="left:46px;top:52px;width:48px;height:18px;" onclick="selectZone(this,'Nacken')">🧣</div>
-          <div class="zone" style="left:15px;top:72px;width:110px;height:55px;" onclick="selectZone(this,'Oberer Rücken')">💆</div>
-          <div class="zone" style="left:15px;top:129px;width:110px;height:55px;" onclick="selectZone(this,'Unterer Rücken')">🔙</div>
-          <div class="zone" style="left:35px;top:186px;width:70px;height:68px;" onclick="selectZone(this,'Gesäß')">🪑</div>
-        </div>
-      </div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectZone(this,'Kopf / Hals')">
+        <span class="emoji">🧠</span><span class="label" data-i18n="zone_head">Kopf / Hals</span>
+      </button>
+      <button class="option-btn" onclick="selectZone(this,'Brust / Schulter')">
+        <span class="emoji">💓</span><span class="label" data-i18n="zone_chest">Brust / Schulter</span>
+      </button>
+      <button class="option-btn" onclick="selectZone(this,'Bauch / Unterleib')">
+        <span class="emoji">🫃</span><span class="label" data-i18n="zone_abdomen">Bauch / Unterleib</span>
+      </button>
+      <button class="option-btn" onclick="selectZone(this,'Arm / Hand')">
+        <span class="emoji">💪</span><span class="label" data-i18n="zone_arm">Arm / Hand</span>
+      </button>
+      <button class="option-btn" onclick="selectZone(this,'Bein / Fuß')">
+        <span class="emoji">🦵</span><span class="label" data-i18n="zone_leg">Bein / Fuß</span>
+      </button>
+      <button class="option-btn" onclick="selectZone(this,'Rücken / Gesäß')">
+        <span class="emoji">🔙</span><span class="label" data-i18n="zone_back">Rücken / Gesäß</span>
+      </button>
     </div>
-    <div id="zone-hint" style="text-align:center;font-size:0.85rem;color:#999;margin-bottom:0.5rem;" data-i18n="zone_hint">Bereich antippen</div>
-    <button class="next-btn" id="next4" disabled onclick="gotoFollowup()" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next4" disabled onclick="goto(5)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 5: Folgefragen -->
+  <!-- Screen 5: Zustand -->
   <div class="screen" id="s5">
     <div class="progress" id="prog5"></div>
-    <div class="screen-title" id="followup-title">Folgefragen</div>
-    <div class="grid" id="followup-grid" style="margin-bottom:auto;"></div>
-    <button class="next-btn" id="next5" disabled onclick="gotoFromFollowup()" data-i18n="next">Weiter →</button>
-  </div>
-
-  <!-- Screen 6: Zustand -->
-  <div class="screen" id="s6">
-    <div class="progress" id="prog6"></div>
     <div class="screen-title" data-i18n="sa_title">Wie fühlen Sie sich?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectCondition(this,'cond_normal')">
@@ -277,12 +262,12 @@
         <span class="emoji">🆘</span><span class="label" data-i18n="cond_emergency">Notfall</span>
       </button>
     </div>
-    <button class="next-btn" id="next6" disabled onclick="goto(7)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next5" disabled onclick="goto(6)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 7: Schmerz -->
-  <div class="screen" id="s7">
-    <div class="progress" id="prog7"></div>
+  <!-- Screen 6: Schmerz -->
+  <div class="screen" id="s6">
+    <div class="progress" id="prog6"></div>
     <div class="screen-title" data-i18n="sb_title">Wie stark sind die Schmerzen?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectPain(this,'pain_none')">
@@ -301,66 +286,12 @@
         <span class="emoji">😱</span><span class="label" data-i18n="pain_unbearable">Unerträglich (10)</span>
       </button>
     </div>
-    <button class="next-btn" id="next7" disabled onclick="goto(8)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next6" disabled onclick="goto(7)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 8: Medikamente -->
-  <div class="screen" id="s8">
-    <div class="progress" id="prog8"></div>
-    <div class="screen-title" data-i18n="sc_title">Wie viele Medikamente nehmen Sie regelmäßig?</div>
-    <div class="grid">
-      <button class="option-btn" onclick="selectMedications(this,'med_0')">
-        <span class="emoji">✅</span><span class="label" data-i18n="med_0">Keine</span>
-      </button>
-      <button class="option-btn" onclick="selectMedications(this,'med_1')">
-        <span class="emoji">💊</span><span class="label" data-i18n="med_1">1</span>
-      </button>
-      <button class="option-btn" onclick="selectMedications(this,'med_2')">
-        <span class="emoji">💊💊</span><span class="label" data-i18n="med_2">2</span>
-      </button>
-      <button class="option-btn" onclick="selectMedications(this,'med_3')">
-        <span class="emoji">💊💊💊</span><span class="label" data-i18n="med_3">3</span>
-      </button>
-      <button class="option-btn" onclick="selectMedications(this,'med_4')">
-        <span class="emoji">💊💊💊💊</span><span class="label" data-i18n="med_4">4</span>
-      </button>
-      <button class="option-btn" onclick="selectMedications(this,'med_5plus')">
-        <span class="emoji">💊💊💊💊💊</span><span class="label" data-i18n="med_5plus">5+</span>
-      </button>
-    </div>
-    <button class="next-btn" id="next8" disabled onclick="goto(9)" data-i18n="next">Weiter →</button>
-  </div>
-
-  <!-- Screen 9: Allergien -->
-  <div class="screen" id="s9">
-    <div class="progress" id="prog9"></div>
-    <div class="screen-title" data-i18n="sd_title">Haben Sie bekannte Allergien?</div>
-    <div class="grid">
-      <button class="option-btn" onclick="selectAllergy(this,'allergy_none')">
-        <span class="emoji">✅</span><span class="label" data-i18n="allergy_none">Keine</span>
-      </button>
-      <button class="option-btn" onclick="selectAllergy(this,'allergy_drugs')">
-        <span class="emoji">💊</span><span class="label" data-i18n="allergy_drugs">Medikamente</span>
-      </button>
-      <button class="option-btn" onclick="selectAllergy(this,'allergy_food')">
-        <span class="emoji">🍎</span><span class="label" data-i18n="allergy_food">Nahrungsmittel</span>
-      </button>
-      <button class="option-btn" onclick="selectAllergy(this,'allergy_insect')">
-        <span class="emoji">🐝</span><span class="label" data-i18n="allergy_insect">Insektengift</span>
-      </button>
-      <button class="option-btn" onclick="selectAllergy(this,'allergy_latex')">
-        <span class="emoji">🏥</span><span class="label" data-i18n="allergy_latex">Latex / Kontrastmittel</span>
-      </button>
-      <button class="option-btn" onclick="selectAllergy(this,'allergy_other')">
-        <span class="emoji">❓</span><span class="label" data-i18n="allergy_other">Sonstiges</span>
-      </button>
-    </div>
-    <button class="next-btn" id="next9" disabled onclick="goto(10)" data-i18n="next">Weiter →</button>
-  </div>
-
-  <!-- Screen 10: Seit wann -->
-  <div class="screen" id="s10">
-    <div class="progress" id="prog10"></div>
+  <!-- Screen 7: Seit wann -->
+  <div class="screen" id="s7">
+    <div class="progress" id="prog7"></div>
     <div class="screen-title" data-i18n="s6_title">Seit wann?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectOne(this,'since','since_min')">
@@ -382,11 +313,81 @@
         <span class="emoji">📆</span><span class="label" data-i18n="since_long">Länger (&gt; 1 Monat)</span>
       </button>
     </div>
-    <button class="next-btn" id="next10" disabled onclick="showSummary()" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next7" disabled onclick="gotoRound1()" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 11: Zusammenfassung -->
+  <!-- Screen 8: Gemini Runde 1 -->
+  <div class="screen" id="s8">
+    <div class="progress" id="prog8"></div>
+    <div class="screen-title" data-i18n="round1_title">Welche Symptome treffen zu?</div>
+    <div class="grid" id="round1-grid" style="margin-bottom:auto;"></div>
+    <button class="next-btn" id="next8" disabled onclick="gotoRound2()" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 9: Gemini Runde 2 -->
+  <div class="screen" id="s9">
+    <div class="progress" id="prog9"></div>
+    <div class="screen-title" data-i18n="round2_title">Noch präziser: Was trifft zu?</div>
+    <div class="grid" id="round2-grid" style="margin-bottom:auto;"></div>
+    <button class="next-btn" id="next9" disabled onclick="goto(10)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 10: Medikamente -->
+  <div class="screen" id="s10">
+    <div class="progress" id="prog10"></div>
+    <div class="screen-title" data-i18n="sc_title">Wie viele Medikamente nehmen Sie regelmäßig?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectMedications(this,'med_0')">
+        <span class="emoji">✅</span><span class="label" data-i18n="med_0">Keine</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_1')">
+        <span class="emoji">💊</span><span class="label" data-i18n="med_1">1</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_2')">
+        <span class="emoji">💊💊</span><span class="label" data-i18n="med_2">2</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_3')">
+        <span class="emoji">💊💊💊</span><span class="label" data-i18n="med_3">3</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_4')">
+        <span class="emoji">💊💊💊💊</span><span class="label" data-i18n="med_4">4</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_5plus')">
+        <span class="emoji">💊💊💊💊💊</span><span class="label" data-i18n="med_5plus">5+</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next10" disabled onclick="goto(11)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 11: Allergien -->
   <div class="screen" id="s11">
+    <div class="progress" id="prog11"></div>
+    <div class="screen-title" data-i18n="sd_title">Haben Sie bekannte Allergien?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_none')">
+        <span class="emoji">✅</span><span class="label" data-i18n="allergy_none">Keine</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_drugs')">
+        <span class="emoji">💊</span><span class="label" data-i18n="allergy_drugs">Medikamente</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_food')">
+        <span class="emoji">🍎</span><span class="label" data-i18n="allergy_food">Nahrungsmittel</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_insect')">
+        <span class="emoji">🐝</span><span class="label" data-i18n="allergy_insect">Insektengift</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_latex')">
+        <span class="emoji">🏥</span><span class="label" data-i18n="allergy_latex">Latex / Kontrastmittel</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_other')">
+        <span class="emoji">❓</span><span class="label" data-i18n="allergy_other">Sonstiges</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next11" disabled onclick="goto(12)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 12: Zusammenfassung -->
+  <div class="screen" id="s12">
     <div class="number-badge" id="wait-number">–</div>
     <div class="number-label" data-i18n="wait_label">Ihre Wartenummer</div>
     <div style="font-size:0.8rem;color:#999;text-align:center;margin-bottom:1rem;padding:0 1rem;border-top:1px solid #eee;padding-top:1rem;" data-i18n="for_staff">Für das Personal</div>
@@ -399,10 +400,6 @@
       <div class="summary-value" id="sum-zone">–</div>
     </div>
     <div class="summary-card">
-      <div class="summary-label" data-i18n="sum_symptom">Leitsymptom</div>
-      <div class="summary-value" id="sum-followup">–</div>
-    </div>
-    <div class="summary-card">
       <div class="summary-label" data-i18n="sum_condition">Zustand</div>
       <div class="summary-value" id="sum-condition">–</div>
     </div>
@@ -413,6 +410,14 @@
     <div class="summary-card">
       <div class="summary-label" data-i18n="sum_since">Seit</div>
       <div class="summary-value" id="sum-since">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_round1">Symptome (Runde 1)</div>
+      <div class="summary-value" id="sum-round1">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_round2">Symptome (Runde 2)</div>
+      <div class="summary-value" id="sum-round2">–</div>
     </div>
     <div class="summary-card">
       <div class="summary-label" data-i18n="sum_medications">Medikamente</div>
@@ -431,10 +436,13 @@
 </div>
 
 <script>
+  const GEMINI_ROUNDS = 2;
+
   const state = {
     lang: 'de', gender: null, age: null, who: null,
-    zones: [], followup: [], condition: null, pain: null,
-    medications: null, allergies: [], since: null, diagnoses: []
+    zones: [], condition: null, pain: null, since: null,
+    round1Answers: [], round2Answers: [],
+    medications: null, allergies: [], diagnoses: []
   };
 
   const T = {
@@ -450,18 +458,10 @@
       age_infant: 'Säugling (0–1)', age_child: 'Kind (2–12)', age_teen: 'Jugendlich (13–17)',
       age_adult: 'Erwachsen (18–64)', age_senior: 'Senior (65–79)', age_elderly: 'Hochbetagt (80+)',
       s3_title: 'Wo ist das Problem?', zone_hint: 'Bereiche antippen (Mehrfachauswahl)',
-      zone_Kopf: 'Kopf', zone_Hals: 'Hals', zone_Brust: 'Brust', zone_Bauch: 'Bauch', zone_Unterbauch: 'Unterbauch',
-      zone_LArm: 'Linker Arm', zone_RArm: 'Rechter Arm', zone_LBein: 'Linkes Bein', zone_RBein: 'Rechtes Bein',
-      zone_Hinterkopf: 'Hinterkopf', zone_Nacken: 'Nacken', zone_OberR: 'Oberer Rücken', zone_UnterR: 'Unterer Rücken', zone_Gesaess: 'Gesäß/Analbereich',
-      body_front: 'Vorne', body_back: 'Hinten',
-      fu_title_Kopf: 'Wie kam der Kopfschmerz?',
-      fu_title_Brust: 'Wie fühlt sich der Brustschmerz an?',
-      fu_title_Bauch: 'Wann ist es schlimmer?',
-      fu_title_arm: 'Was genau spürst du?', fu_title_leg: 'Was genau spürst du?',
-      f_sudden: 'Plötzlich wie ein Blitz', f_gradual: 'Schleichend', f_vision: 'Mit Sehstörung', f_nausea: 'Mit Übelkeit',
-      f_pressure: 'Druck / Enge', f_stabbing: 'Stechend', f_breath: 'Atemnot dazu', f_radiates: 'Strahlt in Arm aus',
-      f_after_eat: 'Nach dem Essen', f_waves: 'In Wellen / Attacken', f_same_spot: 'Immer an selber Stelle', f_wanders: 'Wandert umher',
-      f_numb: 'Taubheit', f_burn: 'Brennen', f_swell: 'Schwellung', f_fall: 'Möglicher Sturz', f_burn_red: 'Brennen / Röte',
+      zone_head: 'Kopf / Hals', zone_chest: 'Brust / Schulter', zone_abdomen: 'Bauch / Unterleib',
+      zone_arm: 'Arm / Hand', zone_leg: 'Bein / Fuß', zone_back: 'Rücken / Gesäß',
+      round1_title: 'Welche Symptome treffen zu?',
+      round2_title: 'Noch präziser: Was trifft zu?',
       sa_title: 'Wie fühlen Sie sich?',
       cond_normal: 'Normal', cond_unwell: 'Angeschlagen', cond_bad: 'Krank', cond_severe: 'Schlecht', cond_emergency: 'Notfall',
       sb_title: 'Wie stark sind die Schmerzen?',
@@ -475,18 +475,11 @@
       since_min: 'Minuten (< 1h)', since_hours: 'Stunden (1–6h)', since_today: 'Heute (6–24h)',
       since_days: 'Tage (2–7)', since_weeks: 'Wochen (1–4)', since_long: 'Länger (> 1 Monat)',
       wait_label: 'Ihre Wartenummer', for_staff: 'Für das Personal',
-      sum_patient: 'Patient', sum_complaint: 'Beschwerden', sum_symptom: 'Leitsymptom',
+      sum_patient: 'Patient', sum_complaint: 'Beschwerden',
       sum_condition: 'Zustand', sum_pain: 'Schmerz', sum_since: 'Seit',
+      sum_round1: 'Symptome (Runde 1)', sum_round2: 'Symptome (Runde 2)',
       sum_medications: 'Medikamente', sum_allergies: 'Allergien', sum_causes: 'Mögliche Ursachen',
       no_estimate: 'Keine Einschätzung verfügbar',
-      prio_urgent: 'Dringend', prio_likely: 'Wahrscheinlich', prio_possible: 'Möglich',
-      d_subarachnoid: 'Subarachnoidalblutung', d_migraine: 'Migräne', d_hypertension_crisis: 'Bluthochdruck-Krise',
-      d_tension_headache: 'Spannungskopfschmerz', d_hypertension: 'Bluthochdruck',
-      d_heart_attack: 'Herzinfarkt', d_angina: 'Angina Pectoris', d_pulmonary_embolism: 'Lungenembolie',
-      d_muscular: 'Muskuläre Ursache', d_reflux: 'Reflux', d_heart_problems: 'Herzprobleme',
-      d_biliary_colic: 'Gallenkolik', d_gastric_ulcer: 'Magengeschwür', d_hepatitis: 'Leberentzündung',
-      d_kidney_stone: 'Nierenstein', d_bowel_obstruction: 'Darmverschluss',
-      d_appendicitis: 'Appendizitis', d_gastritis: 'Gastritis', d_bowel_disease: 'Darmerkrankung',
     },
   };
 
@@ -502,12 +495,12 @@
   }
 
   const zoneKey = {
-    'Kopf': 'zone_Kopf', 'Hals': 'zone_Hals', 'Brust': 'zone_Brust',
-    'Bauch': 'zone_Bauch', 'Unterbauch': 'zone_Unterbauch',
-    'Linker Arm': 'zone_LArm', 'Rechter Arm': 'zone_RArm',
-    'Linkes Bein': 'zone_LBein', 'Rechtes Bein': 'zone_RBein',
-    'Hinterkopf': 'zone_Hinterkopf', 'Nacken': 'zone_Nacken', 'Oberer Rücken': 'zone_OberR',
-    'Unterer Rücken': 'zone_UnterR', 'Gesäß': 'zone_Gesaess',
+    'Kopf / Hals': 'zone_head',
+    'Brust / Schulter': 'zone_chest',
+    'Bauch / Unterleib': 'zone_abdomen',
+    'Arm / Hand': 'zone_arm',
+    'Bein / Fuß': 'zone_leg',
+    'Rücken / Gesäß': 'zone_back',
   };
 
 
@@ -518,7 +511,7 @@
   }
 
   function updateProgress(n) {
-    const total = 11;
+    const total = 12;
     for (let i = 1; i <= total; i++) {
       const el = document.getElementById('prog' + i);
       if (!el) continue;
@@ -583,7 +576,7 @@
     el.classList.add('selected');
     state[key] = value;
     if (key === 'who') checkNext1();
-    if (key === 'since') document.getElementById('next10').disabled = false;
+    if (key === 'since') document.getElementById('next7').disabled = false;
   }
 
   function checkNext1() {
@@ -623,82 +616,110 @@
     } else {
       state.zones = state.zones.filter(z => z !== zone);
     }
-    document.getElementById('zone-hint').textContent = state.zones.length > 0
-      ? state.zones.map(z => t(zoneKey[z])).join(', ')
-      : t('zone_hint');
     document.getElementById('next4').disabled = state.zones.length === 0;
   }
 
-  async function gotoFollowup() {
+  function buildDynamicGrid(gridId, answers, nextId) {
+    return function(q) {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="emoji">${q.emoji}</span><span class="label">${q.label}</span>`;
+      btn.onclick = function() {
+        btn.classList.toggle('selected');
+        if (btn.classList.contains('selected')) { answers.push(q.label); }
+        else { const i = answers.indexOf(q.label); if (i > -1) answers.splice(i, 1); }
+        document.getElementById(nextId).disabled = answers.length === 0;
+      };
+      document.getElementById(gridId).appendChild(btn);
+    };
+  }
+
+  async function gotoRound1() {
     showLoading(true);
     try {
-      const bodyPart = state.zones.map(z => T.de[zoneKey[z]]).join(', ');
+      const zones = state.zones.map(z => T.de[zoneKey[z]]).join(', ');
       const resp = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'questions',
-          bodyPart,
-          lang: state.lang,
+          action: 'questions_round1',
+          zones, lang: state.lang,
           gender: T.de[state.gender] || state.gender,
           age: T.de[state.age] || state.age,
+          condition: T.de[state.condition] || state.condition,
+          pain: T.de[state.pain] || state.pain,
+          since: T.de[state.since] || state.since,
         })
       });
       const data = await resp.json();
       if (!resp.ok || !data.questions) throw new Error(data.error || 'API error');
-
-      document.getElementById('followup-title').textContent = state.zones.map(z => t(zoneKey[z])).join(', ');
-      const grid = document.getElementById('followup-grid');
+      const grid = document.getElementById('round1-grid');
       grid.innerHTML = '';
-      state.followup = [];
-      data.questions.forEach(q => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<span class="emoji">${q.emoji}</span><span class="label">${q.label}</span>`;
-        btn.onclick = function() {
-          btn.classList.toggle('selected');
-          if (btn.classList.contains('selected')) {
-            state.followup.push(q.label);
-          } else {
-            state.followup = state.followup.filter(f => f !== q.label);
-          }
-          document.getElementById('next5').disabled = state.followup.length === 0;
-        };
-        grid.appendChild(btn);
-      });
-      document.getElementById('next5').disabled = true;
-      goto(5);
+      state.round1Answers = [];
+      data.questions.forEach(buildDynamicGrid('round1-grid', state.round1Answers, 'next8'));
+      document.getElementById('next8').disabled = true;
+      goto(8);
     } catch (err) {
-      console.error('Questions failed:', err);
-      goto(6);
+      console.error('Round 1 failed:', err);
+      goto(8);
     } finally {
       showLoading(false);
     }
   }
 
-  function gotoFromFollowup() {
-    goto(6);
+  async function gotoRound2() {
+    showLoading(true);
+    try {
+      const zones = state.zones.map(z => T.de[zoneKey[z]]).join(', ');
+      const resp = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'questions_round2',
+          zones, lang: state.lang,
+          gender: T.de[state.gender] || state.gender,
+          age: T.de[state.age] || state.age,
+          condition: T.de[state.condition] || state.condition,
+          pain: T.de[state.pain] || state.pain,
+          since: T.de[state.since] || state.since,
+          round1Answers: state.round1Answers,
+        })
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.questions) throw new Error(data.error || 'API error');
+      const grid = document.getElementById('round2-grid');
+      grid.innerHTML = '';
+      state.round2Answers = [];
+      data.questions.forEach(buildDynamicGrid('round2-grid', state.round2Answers, 'next9'));
+      document.getElementById('next9').disabled = true;
+      goto(9);
+    } catch (err) {
+      console.error('Round 2 failed:', err);
+      goto(9);
+    } finally {
+      showLoading(false);
+    }
   }
 
   function selectCondition(el, key) {
     el.closest('.screen').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     state.condition = key;
-    document.getElementById('next6').disabled = false;
+    document.getElementById('next5').disabled = false;
   }
 
   function selectPain(el, key) {
     el.closest('.screen').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     state.pain = key;
-    document.getElementById('next7').disabled = false;
+    document.getElementById('next6').disabled = false;
   }
 
   function selectMedications(el, key) {
     el.closest('.screen').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     state.medications = key;
-    document.getElementById('next8').disabled = false;
+    document.getElementById('next10').disabled = false;
   }
 
   function selectAllergy(el, key) {
@@ -712,13 +733,10 @@
       screen.querySelector('[onclick*="allergy_none"]').classList.remove('selected');
       state.allergies = state.allergies.filter(a => a !== 'allergy_none');
       el.classList.toggle('selected');
-      if (el.classList.contains('selected')) {
-        state.allergies.push(key);
-      } else {
-        state.allergies = state.allergies.filter(a => a !== key);
-      }
+      if (el.classList.contains('selected')) { state.allergies.push(key); }
+      else { state.allergies = state.allergies.filter(a => a !== key); }
     }
-    document.getElementById('next9').disabled = state.allergies.length === 0;
+    document.getElementById('next11').disabled = state.allergies.length === 0;
   }
 
   function renderDiagnoses() {
@@ -743,7 +761,8 @@
         body: JSON.stringify({
           action: 'diagnose',
           bodyPart,
-          symptoms: state.followup,
+          round1Answers: state.round1Answers,
+          round2Answers: state.round2Answers,
           lang: state.lang,
           gender: T.de[state.gender] || state.gender,
           age: T.de[state.age] || state.age,
@@ -770,16 +789,18 @@
     document.getElementById('sum-who').textContent = [genderAge, t(state.who)].filter(Boolean).join(' · ') || '–';
     document.getElementById('sum-zone').textContent = state.zones.length > 0
       ? state.zones.map(z => t(zoneKey[z])).join(', ') : '–';
-    document.getElementById('sum-followup').textContent = state.followup.length > 0
-      ? state.followup.join(', ') : '–';
     document.getElementById('sum-condition').textContent = state.condition ? t(state.condition) : '–';
     document.getElementById('sum-pain').textContent = state.pain ? t(state.pain) : '–';
     document.getElementById('sum-since').textContent = state.since ? t(state.since) : '–';
+    document.getElementById('sum-round1').textContent = state.round1Answers.length > 0
+      ? state.round1Answers.join(', ') : '–';
+    document.getElementById('sum-round2').textContent = state.round2Answers.length > 0
+      ? state.round2Answers.join(', ') : '–';
     document.getElementById('sum-medications').textContent = state.medications ? t(state.medications) : '–';
     document.getElementById('sum-allergies').textContent = state.allergies.length > 0
       ? state.allergies.map(a => t(a)).join(', ') : '–';
     document.getElementById('sum-diagnose').innerHTML = renderDiagnoses();
-    goto(11);
+    goto(12);
   }
 
   function resetApp() {
@@ -788,21 +809,22 @@
     state.age = null;
     state.who = null;
     state.zones = [];
-    state.followup = [];
-    state.diagnoses = [];
     state.condition = null;
     state.pain = null;
+    state.since = null;
+    state.round1Answers = [];
+    state.round2Answers = [];
     state.medications = null;
     state.allergies = [];
-    state.since = null;
+    state.diagnoses = [];
 
-    ['next1','next2','next3','next4','next5','next6','next7','next8','next9','next10'].forEach(id => {
+    ['next1','next2','next3','next4','next5','next6','next7','next8','next9','next10','next11'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.disabled = true;
     });
     document.getElementById('next0').disabled = false;
 
-    document.querySelectorAll('.option-btn, .bio-gender-btn, .zone').forEach(el => {
+    document.querySelectorAll('.option-btn, .bio-gender-btn').forEach(el => {
       el.classList.remove('selected');
     });
     document.querySelectorAll('.bio-gender-btn').forEach(b => { b.style.borderColor = ''; });
