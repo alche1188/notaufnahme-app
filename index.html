@@ -251,24 +251,36 @@
     <button class="next-btn" id="next5" disabled onclick="gotoFromFollowup()" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 6: Schmerz -->
+  <!-- Screen 6: Zustand -->
   <div class="screen" id="s6">
     <div class="progress" id="prog6"></div>
-    <div class="screen-title" data-i18n="s5_title">Wie fühlen Sie sich?</div>
+    <div class="screen-title" data-i18n="sa_title">Wie fühlen Sie sich?</div>
     <div class="face-row">
-      <button class="face-btn" onclick="selectPain(this,'pain_1')">😊</button>
-      <button class="face-btn" onclick="selectPain(this,'pain_3')">🙂</button>
-      <button class="face-btn" onclick="selectPain(this,'pain_5')">😐</button>
-      <button class="face-btn" onclick="selectPain(this,'pain_7')">😟</button>
-      <button class="face-btn" onclick="selectPain(this,'pain_9')">😭</button>
-      <button class="face-btn" onclick="selectPain(this,'pain_10')">😱</button>
+      <button class="face-btn" onclick="selectCondition(this,'cond_normal')">😊</button>
+      <button class="face-btn" onclick="selectCondition(this,'cond_unwell')">😐</button>
+      <button class="face-btn" onclick="selectCondition(this,'cond_bad')">😟</button>
+      <button class="face-btn" onclick="selectCondition(this,'cond_emergency')">😱</button>
     </div>
     <button class="next-btn" id="next6" disabled onclick="goto(7)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 7: Seit wann -->
+  <!-- Screen 7: Schmerz -->
   <div class="screen" id="s7">
     <div class="progress" id="prog7"></div>
+    <div class="screen-title" data-i18n="sb_title">Wie stark sind die Schmerzen?</div>
+    <div class="face-row">
+      <button class="face-btn" onclick="selectPain(this,'pain_none')">😌</button>
+      <button class="face-btn" onclick="selectPain(this,'pain_mild')">😐</button>
+      <button class="face-btn" onclick="selectPain(this,'pain_medium')">😟</button>
+      <button class="face-btn" onclick="selectPain(this,'pain_strong')">😰</button>
+      <button class="face-btn" onclick="selectPain(this,'pain_unbearable')">😱</button>
+    </div>
+    <button class="next-btn" id="next7" disabled onclick="goto(8)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 8: Seit wann -->
+  <div class="screen" id="s8">
+    <div class="progress" id="prog8"></div>
     <div class="screen-title" data-i18n="s6_title">Seit wann?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectOne(this,'since','since_1h')">
@@ -284,11 +296,11 @@
         <span class="emoji">🗓️</span><span class="label" data-i18n="since_week">Länger als 1 Woche</span>
       </button>
     </div>
-    <button class="next-btn" id="next7" disabled onclick="showSummary()" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next8" disabled onclick="showSummary()" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 8: Zusammenfassung -->
-  <div class="screen" id="s8">
+  <!-- Screen 9: Zusammenfassung -->
+  <div class="screen" id="s9">
     <div class="number-badge" id="wait-number">–</div>
     <div class="number-label" data-i18n="wait_label">Ihre Wartenummer</div>
     <div style="font-size:0.8rem;color:#999;text-align:center;margin-bottom:1rem;padding:0 1rem;border-top:1px solid #eee;padding-top:1rem;" data-i18n="for_staff">Für das Personal</div>
@@ -303,6 +315,10 @@
     <div class="summary-card">
       <div class="summary-label" data-i18n="sum_symptom">Leitsymptom</div>
       <div class="summary-value" id="sum-followup">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_condition">Zustand</div>
+      <div class="summary-value" id="sum-condition">–</div>
     </div>
     <div class="summary-card">
       <div class="summary-label" data-i18n="sum_pain">Schmerz</div>
@@ -323,7 +339,7 @@
 <script>
   const state = {
     lang: 'de', gender: null, age: null, who: null,
-    zones: [], followup: [], pain: null, since: null, diagnoses: []
+    zones: [], followup: [], condition: null, pain: null, since: null, diagnoses: []
   };
 
   const T = {
@@ -349,14 +365,15 @@
       f_pressure: 'Druck / Enge', f_stabbing: 'Stechend', f_breath: 'Atemnot dazu', f_radiates: 'Strahlt in Arm aus',
       f_after_eat: 'Nach dem Essen', f_waves: 'In Wellen / Attacken', f_same_spot: 'Immer an selber Stelle', f_wanders: 'Wandert umher',
       f_numb: 'Taubheit', f_burn: 'Brennen', f_swell: 'Schwellung', f_fall: 'Möglicher Sturz', f_burn_red: 'Brennen / Röte',
-      s5_title: 'Wie fühlen Sie sich?',
-      pain_1: 'Kaum (1/10)', pain_3: 'Leicht (3/10)', pain_5: 'Mittel (5/10)',
-      pain_7: 'Stark (7/10)', pain_9: 'Sehr stark (9/10)', pain_10: 'Unerträglich (10/10)',
+      sa_title: 'Wie fühlen Sie sich?',
+      cond_normal: 'Normal / Wie immer', cond_unwell: 'Unwohl', cond_bad: 'Schlecht', cond_emergency: 'Notfall',
+      sb_title: 'Wie stark sind die Schmerzen?',
+      pain_none: 'Keine', pain_mild: 'Leicht', pain_medium: 'Mittel', pain_strong: 'Stark', pain_unbearable: 'Unerträglich',
       s6_title: 'Seit wann?',
       since_1h: 'Weniger als 1 Stunde', since_24h: '1–24 Stunden', since_7d: '2–7 Tage', since_week: 'Länger als 1 Woche',
       wait_label: 'Ihre Wartenummer', for_staff: 'Für das Personal',
       sum_patient: 'Patient', sum_complaint: 'Beschwerden', sum_symptom: 'Leitsymptom',
-      sum_pain: 'Schmerz', sum_since: 'Seit', sum_causes: 'Mögliche Ursachen',
+      sum_condition: 'Zustand', sum_pain: 'Schmerz', sum_since: 'Seit', sum_causes: 'Mögliche Ursachen',
       no_estimate: 'Keine Einschätzung verfügbar',
       prio_urgent: 'Dringend', prio_likely: 'Wahrscheinlich', prio_possible: 'Möglich',
       d_subarachnoid: 'Subarachnoidalblutung', d_migraine: 'Migräne', d_hypertension_crisis: 'Bluthochdruck-Krise',
@@ -397,7 +414,7 @@
   }
 
   function updateProgress(n) {
-    const total = 8;
+    const total = 9;
     for (let i = 1; i <= total; i++) {
       const el = document.getElementById('prog' + i);
       if (!el) continue;
@@ -462,7 +479,7 @@
     el.classList.add('selected');
     state[key] = value;
     if (key === 'who') checkNext1();
-    if (key === 'since') document.getElementById('next7').disabled = false;
+    if (key === 'since') document.getElementById('next8').disabled = false;
   }
 
   function checkNext1() {
@@ -555,41 +572,22 @@
     }
   }
 
-  async function gotoFromFollowup() {
-    showLoading(true);
-    try {
-      const bodyPart = state.zones.map(z => T.de[zoneKey[z]]).join(', ');
-      const resp = await fetch('/api/gemini', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'diagnose',
-          bodyPart,
-          symptoms: state.followup,
-          lang: state.lang,
-          gender: T.de[state.gender] || state.gender,
-          age: T.de[state.age] || state.age,
-          pain: T.de[state.pain] || state.pain,
-          since: T.de[state.since] || state.since,
-        })
-      });
-      const data = await resp.json();
-      if (!resp.ok || !data.diagnoses) throw new Error(data.error || 'API error');
-      state.diagnoses = data.diagnoses;
-    } catch (err) {
-      console.error('Diagnose failed:', err);
-      state.diagnoses = [];
-    } finally {
-      showLoading(false);
-      goto(6);
-    }
+  function gotoFromFollowup() {
+    goto(6);
+  }
+
+  function selectCondition(el, key) {
+    el.closest('.screen').querySelectorAll('.face-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    state.condition = key;
+    document.getElementById('next6').disabled = false;
   }
 
   function selectPain(el, key) {
-    document.querySelectorAll('.face-btn').forEach(b => b.classList.remove('selected'));
+    el.closest('.screen').querySelectorAll('.face-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     state.pain = key;
-    document.getElementById('next6').disabled = false;
+    document.getElementById('next7').disabled = false;
   }
 
   function renderDiagnoses() {
@@ -604,7 +602,35 @@
     ).join('<hr style="border:none;border-top:1px solid #eee;">');
   }
 
-  function showSummary() {
+  async function showSummary() {
+    showLoading(true);
+    try {
+      const bodyPart = state.zones.map(z => T.de[zoneKey[z]]).join(', ');
+      const resp = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'diagnose',
+          bodyPart,
+          symptoms: state.followup,
+          lang: state.lang,
+          gender: T.de[state.gender] || state.gender,
+          age: T.de[state.age] || state.age,
+          condition: T.de[state.condition] || state.condition,
+          pain: T.de[state.pain] || state.pain,
+          since: T.de[state.since] || state.since,
+        })
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.diagnoses) throw new Error(data.error || 'API error');
+      state.diagnoses = data.diagnoses;
+    } catch (err) {
+      console.error('Diagnose failed:', err);
+      state.diagnoses = [];
+    } finally {
+      showLoading(false);
+    }
+
     const num = Math.floor(Math.random() * 89) + 10;
     document.getElementById('wait-number').textContent = num;
     const genderAge = [state.gender, state.age].filter(Boolean).map(k => t(k)).join(' · ');
@@ -613,10 +639,11 @@
       ? state.zones.map(z => t(zoneKey[z])).join(', ') : '–';
     document.getElementById('sum-followup').textContent = state.followup.length > 0
       ? state.followup.join(', ') : '–';
+    document.getElementById('sum-condition').textContent = state.condition ? t(state.condition) : '–';
     document.getElementById('sum-pain').textContent = state.pain ? t(state.pain) : '–';
     document.getElementById('sum-since').textContent = state.since ? t(state.since) : '–';
     document.getElementById('sum-diagnose').innerHTML = renderDiagnoses();
-    goto(8);
+    goto(9);
   }
 
   function resetApp() {
@@ -627,10 +654,11 @@
     state.zones = [];
     state.followup = [];
     state.diagnoses = [];
+    state.condition = null;
     state.pain = null;
     state.since = null;
 
-    ['next1','next2','next3','next4','next5','next6','next7'].forEach(id => {
+    ['next1','next2','next3','next4','next5','next6','next7','next8'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.disabled = true;
     });

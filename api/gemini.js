@@ -55,11 +55,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ questions: questions.slice(0, 6) });
 
     } else if (action === 'diagnose') {
-      const { bodyPart, symptoms, lang, gender, age, pain, since } = req.body;
+      const { bodyPart, symptoms, lang, gender, age, condition, pain, since } = req.body;
       if (!bodyPart || !Array.isArray(symptoms) || !lang) return res.status(400).json({ error: 'Missing bodyPart, symptoms, or lang' });
 
       const langName = langNames[lang] || lang;
-      const prompt = `Du bist ein erfahrener Notaufnahmearzt. Analysiere folgende Patientendaten präzise. Wichtige Hinweise: Bei Brust + Arm Symptomen immer Herzinfarkt in Betracht ziehen unabhängig von links oder rechts, da Patienten Seiten verwechseln. Bei weiblichen Patienten im gebärfähigen Alter mit Unterbauchschmerzen immer Schwangerschaft und Eileiterschwangerschaft berücksichtigen. Körperstellen-Kombinationen sind wichtiger als einzelne Stellen. Patientendaten: Geschlecht: ${gender || 'unbekannt'}, Alter: ${age || 'unbekannt'}, Beschwerden in: ${bodyPart}, Symptome: ${symptoms.join(', ') || 'keine'}, Schmerz: ${pain || 'unbekannt'}, Seit: ${since || 'unbekannt'}. Nenne exakt 3 wahrscheinlichste Diagnosen. name und likelihood auf ${langName}. Antworte nur als JSON Array: [{"name":"...","likelihood":"..."}]. Likelihood: Wahrscheinlich, Möglich, oder Unwahrscheinlich (übersetzt auf ${langName}). Kein weiterer Text.`;
+      const prompt = `Du bist ein erfahrener Notaufnahmearzt. Analysiere folgende Patientendaten präzise. Wichtige Hinweise: Bei Brust + Arm Symptomen immer Herzinfarkt in Betracht ziehen unabhängig von links oder rechts, da Patienten Seiten verwechseln. Bei weiblichen Patienten im gebärfähigen Alter mit Unterbauchschmerzen immer Schwangerschaft und Eileiterschwangerschaft berücksichtigen. Körperstellen-Kombinationen sind wichtiger als einzelne Stellen. Patientendaten: Geschlecht: ${gender || 'unbekannt'}, Alter: ${age || 'unbekannt'}, Beschwerden in: ${bodyPart}, Symptome: ${symptoms.join(', ') || 'keine'}, Zustand: ${condition || 'unbekannt'}, Schmerz: ${pain || 'unbekannt'}, Seit: ${since || 'unbekannt'}. Nenne exakt 3 wahrscheinlichste Diagnosen. name und likelihood auf ${langName}. Antworte nur als JSON Array: [{"name":"...","likelihood":"..."}]. Likelihood: Wahrscheinlich, Möglich, oder Unwahrscheinlich (übersetzt auf ${langName}). Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const diagnoses = JSON.parse(raw);
       if (!Array.isArray(diagnoses)) throw new Error('Unexpected response');
