@@ -47,7 +47,7 @@
 
     .screen-title { font-size: 1.3rem; color: #555; text-align: center; margin-bottom: 1.5rem; }
 
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: auto; }
+    .grid { display: grid; grid-template-columns: repeat(var(--grid-columns, 2), 1fr); gap: 12px; margin-bottom: auto; }
 
     .option-btn {
       background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 16px;
@@ -437,6 +437,9 @@
 
 <script>
   const GEMINI_ROUNDS = 2;
+  const GRID_COLUMNS = 2;
+  const GRID_ROWS = 3;
+  document.documentElement.style.setProperty('--grid-columns', GRID_COLUMNS);
 
   const state = {
     lang: 'de', gender: null, age: null, who: null,
@@ -656,7 +659,7 @@
       const grid = document.getElementById('round1-grid');
       grid.innerHTML = '';
       state.round1Answers = [];
-      data.questions.forEach(buildDynamicGrid('round1-grid', state.round1Answers, 'next8'));
+      data.questions.slice(0, GRID_COLUMNS * GRID_ROWS).forEach(buildDynamicGrid('round1-grid', state.round1Answers, 'next8'));
       document.getElementById('next8').disabled = true;
       goto(8);
     } catch (err) {
@@ -690,7 +693,7 @@
       const grid = document.getElementById('round2-grid');
       grid.innerHTML = '';
       state.round2Answers = [];
-      data.questions.forEach(buildDynamicGrid('round2-grid', state.round2Answers, 'next9'));
+      data.questions.slice(0, GRID_COLUMNS * GRID_ROWS).forEach(buildDynamicGrid('round2-grid', state.round2Answers, 'next9'));
       document.getElementById('next9').disabled = true;
       goto(9);
     } catch (err) {
