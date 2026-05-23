@@ -147,7 +147,7 @@
         <button class="lang-btn" data-lang="pl" onclick="selectLang(this)">🇵🇱 Polski</button>
       </div>
     </div>
-    <button class="next-btn" onclick="goto(1)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next0" onclick="goto(1)" data-i18n="next">Weiter →</button>
   </div>
 
   <!-- Screen 1: Wer bist du -->
@@ -421,9 +421,11 @@
     if (lang === 'de' || T[lang]) {
       state.lang = lang;
       applyTranslations();
+      document.getElementById('next0').disabled = false;
       return;
     }
 
+    document.getElementById('next0').disabled = true;
     showLoading(true);
     try {
       const keys = Object.keys(T.de);
@@ -439,9 +441,15 @@
       keys.forEach((k, i) => { T[lang][k] = data.translated[i]; });
       state.lang = lang;
       applyTranslations();
+      document.getElementById('next0').disabled = false;
     } catch (err) {
       console.error('Translation failed:', err);
-      state.lang = lang;
+      state.lang = 'de';
+      document.querySelectorAll('.lang-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.lang === 'de');
+      });
+      applyTranslations();
+      document.getElementById('next0').disabled = false;
     } finally {
       showLoading(false);
     }
@@ -625,6 +633,7 @@
       const el = document.getElementById(id);
       if (el) el.disabled = true;
     });
+    document.getElementById('next0').disabled = false;
 
     document.querySelectorAll('.option-btn, .bio-gender-btn, .face-btn, .zone').forEach(el => {
       el.classList.remove('selected');
