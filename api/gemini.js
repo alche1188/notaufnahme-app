@@ -50,11 +50,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ questions: questions.slice(0, 6) });
 
     } else if (action === 'diagnose') {
-      const { bodyPart, symptoms, lang } = req.body;
+      const { bodyPart, symptoms, lang, gender, age, pain, since } = req.body;
       if (!bodyPart || !Array.isArray(symptoms) || !lang) return res.status(400).json({ error: 'Missing bodyPart, symptoms, or lang' });
 
       const langName = langNames[lang] || lang;
-      const prompt = `You are an experienced emergency room doctor. Based on: body part "${bodyPart}", symptoms: ${symptoms.join(', ')}. Generate exactly 3 possible diagnoses sorted by likelihood. The name and likelihood values must be in ${langName}. Respond ONLY as a JSON array: [{"name":"...","likelihood":"..."}]. No other text.`;
+      const prompt = `Du bist ein erfahrener Notaufnahmearzt. Analysiere folgende Patientendaten und nenne die 3 wahrscheinlichsten Diagnosen sortiert nach Wahrscheinlichkeit. Berücksichtige Geschlecht und Alter bei der Einschätzung - zum Beispiel Schwangerschaft bei weiblichen Patienten im gebärfähigen Alter, oder typische altersbedingte Erkrankungen. Patientendaten: Geschlecht: ${gender || 'unbekannt'}, Alter: ${age || 'unbekannt'}, Beschwerden in: ${bodyPart}, Symptome: ${symptoms.join(', ') || 'keine'}, Schmerz: ${pain || 'unbekannt'}, Seit: ${since || 'unbekannt'}. Antworte nur als JSON Array mit exakt 3 Objekten, name und likelihood auf ${langName}: [{"name":"...","likelihood":"..."}]. Likelihood ist einer von: Wahrscheinlich, Möglich, Unwahrscheinlich (übersetzt auf ${langName}). Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const diagnoses = JSON.parse(raw);
       if (!Array.isArray(diagnoses)) throw new Error('Unexpected response');

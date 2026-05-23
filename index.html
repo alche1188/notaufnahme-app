@@ -544,7 +544,16 @@
       const resp = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'diagnose', bodyPart, symptoms: state.followup, lang: state.lang })
+        body: JSON.stringify({
+          action: 'diagnose',
+          bodyPart,
+          symptoms: state.followup,
+          lang: state.lang,
+          gender: T.de[state.gender] || state.gender,
+          age: T.de[state.age] || state.age,
+          pain: T.de[state.pain] || state.pain,
+          since: T.de[state.since] || state.since,
+        })
       });
       const data = await resp.json();
       if (!resp.ok || !data.diagnoses) throw new Error(data.error || 'API error');
