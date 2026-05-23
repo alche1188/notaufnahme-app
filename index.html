@@ -304,9 +304,63 @@
     <button class="next-btn" id="next7" disabled onclick="goto(8)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 8: Seit wann -->
+  <!-- Screen 8: Medikamente -->
   <div class="screen" id="s8">
     <div class="progress" id="prog8"></div>
+    <div class="screen-title" data-i18n="sc_title">Wie viele Medikamente nehmen Sie regelmäßig?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectMedications(this,'med_0')">
+        <span class="emoji">0️⃣</span><span class="label" data-i18n="med_0">0</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_1')">
+        <span class="emoji">1️⃣</span><span class="label" data-i18n="med_1">1</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_2')">
+        <span class="emoji">2️⃣</span><span class="label" data-i18n="med_2">2</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_3')">
+        <span class="emoji">3️⃣</span><span class="label" data-i18n="med_3">3</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_4')">
+        <span class="emoji">4️⃣</span><span class="label" data-i18n="med_4">4</span>
+      </button>
+      <button class="option-btn" onclick="selectMedications(this,'med_5plus')">
+        <span class="emoji">💊</span><span class="label" data-i18n="med_5plus">5+</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next8" disabled onclick="goto(9)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 9: Allergien -->
+  <div class="screen" id="s9">
+    <div class="progress" id="prog9"></div>
+    <div class="screen-title" data-i18n="sd_title">Haben Sie bekannte Allergien?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_none')">
+        <span class="emoji">✅</span><span class="label" data-i18n="allergy_none">Keine</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_drugs')">
+        <span class="emoji">💊</span><span class="label" data-i18n="allergy_drugs">Medikamente</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_food')">
+        <span class="emoji">🍎</span><span class="label" data-i18n="allergy_food">Nahrungsmittel</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_insect')">
+        <span class="emoji">🐝</span><span class="label" data-i18n="allergy_insect">Insektengift</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_latex')">
+        <span class="emoji">🏥</span><span class="label" data-i18n="allergy_latex">Latex / Kontrastmittel</span>
+      </button>
+      <button class="option-btn" onclick="selectAllergy(this,'allergy_other')">
+        <span class="emoji">❓</span><span class="label" data-i18n="allergy_other">Sonstiges</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next9" disabled onclick="goto(10)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 10: Seit wann -->
+  <div class="screen" id="s10">
+    <div class="progress" id="prog10"></div>
     <div class="screen-title" data-i18n="s6_title">Seit wann?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectOne(this,'since','since_min')">
@@ -328,11 +382,11 @@
         <span class="emoji">📆</span><span class="label" data-i18n="since_long">Länger (&gt; 1 Monat)</span>
       </button>
     </div>
-    <button class="next-btn" id="next8" disabled onclick="showSummary()" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next10" disabled onclick="showSummary()" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 9: Zusammenfassung -->
-  <div class="screen" id="s9">
+  <!-- Screen 11: Zusammenfassung -->
+  <div class="screen" id="s11">
     <div class="number-badge" id="wait-number">–</div>
     <div class="number-label" data-i18n="wait_label">Ihre Wartenummer</div>
     <div style="font-size:0.8rem;color:#999;text-align:center;margin-bottom:1rem;padding:0 1rem;border-top:1px solid #eee;padding-top:1rem;" data-i18n="for_staff">Für das Personal</div>
@@ -361,6 +415,14 @@
       <div class="summary-value" id="sum-since">–</div>
     </div>
     <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_medications">Medikamente</div>
+      <div class="summary-value" id="sum-medications">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_allergies">Allergien</div>
+      <div class="summary-value" id="sum-allergies">–</div>
+    </div>
+    <div class="summary-card">
       <div class="summary-label" data-i18n="sum_causes">Mögliche Ursachen</div>
       <div id="sum-diagnose">–</div>
     </div>
@@ -371,7 +433,8 @@
 <script>
   const state = {
     lang: 'de', gender: null, age: null, who: null,
-    zones: [], followup: [], condition: null, pain: null, since: null, diagnoses: []
+    zones: [], followup: [], condition: null, pain: null,
+    medications: null, allergies: [], since: null, diagnoses: []
   };
 
   const T = {
@@ -403,12 +466,18 @@
       cond_normal: 'Normal', cond_unwell: 'Angeschlagen', cond_bad: 'Krank', cond_severe: 'Schlecht', cond_emergency: 'Notfall',
       sb_title: 'Wie stark sind die Schmerzen?',
       pain_none: 'Keine (0)', pain_mild: 'Leicht (1–3)', pain_medium: 'Mittel (4–6)', pain_strong: 'Stark (7–9)', pain_unbearable: 'Unerträglich (10)',
+      sc_title: 'Wie viele Medikamente nehmen Sie regelmäßig?',
+      med_0: '0', med_1: '1', med_2: '2', med_3: '3', med_4: '4', med_5plus: '5+',
+      sd_title: 'Haben Sie bekannte Allergien?',
+      allergy_none: 'Keine', allergy_drugs: 'Medikamente', allergy_food: 'Nahrungsmittel',
+      allergy_insect: 'Insektengift', allergy_latex: 'Latex / Kontrastmittel', allergy_other: 'Sonstiges',
       s6_title: 'Seit wann?',
       since_min: 'Minuten (< 1h)', since_hours: 'Stunden (1–6h)', since_today: 'Heute (6–24h)',
       since_days: 'Tage (2–7)', since_weeks: 'Wochen (1–4)', since_long: 'Länger (> 1 Monat)',
       wait_label: 'Ihre Wartenummer', for_staff: 'Für das Personal',
       sum_patient: 'Patient', sum_complaint: 'Beschwerden', sum_symptom: 'Leitsymptom',
-      sum_condition: 'Zustand', sum_pain: 'Schmerz', sum_since: 'Seit', sum_causes: 'Mögliche Ursachen',
+      sum_condition: 'Zustand', sum_pain: 'Schmerz', sum_since: 'Seit',
+      sum_medications: 'Medikamente', sum_allergies: 'Allergien', sum_causes: 'Mögliche Ursachen',
       no_estimate: 'Keine Einschätzung verfügbar',
       prio_urgent: 'Dringend', prio_likely: 'Wahrscheinlich', prio_possible: 'Möglich',
       d_subarachnoid: 'Subarachnoidalblutung', d_migraine: 'Migräne', d_hypertension_crisis: 'Bluthochdruck-Krise',
@@ -449,7 +518,7 @@
   }
 
   function updateProgress(n) {
-    const total = 9;
+    const total = 11;
     for (let i = 1; i <= total; i++) {
       const el = document.getElementById('prog' + i);
       if (!el) continue;
@@ -514,7 +583,7 @@
     el.classList.add('selected');
     state[key] = value;
     if (key === 'who') checkNext1();
-    if (key === 'since') document.getElementById('next8').disabled = false;
+    if (key === 'since') document.getElementById('next10').disabled = false;
   }
 
   function checkNext1() {
@@ -625,6 +694,33 @@
     document.getElementById('next7').disabled = false;
   }
 
+  function selectMedications(el, key) {
+    el.closest('.screen').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    state.medications = key;
+    document.getElementById('next8').disabled = false;
+  }
+
+  function selectAllergy(el, key) {
+    const screen = el.closest('.screen');
+    const btns = screen.querySelectorAll('.option-btn');
+    if (key === 'allergy_none') {
+      btns.forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      state.allergies = ['allergy_none'];
+    } else {
+      screen.querySelector('[onclick*="allergy_none"]').classList.remove('selected');
+      state.allergies = state.allergies.filter(a => a !== 'allergy_none');
+      el.classList.toggle('selected');
+      if (el.classList.contains('selected')) {
+        state.allergies.push(key);
+      } else {
+        state.allergies = state.allergies.filter(a => a !== key);
+      }
+    }
+    document.getElementById('next9').disabled = state.allergies.length === 0;
+  }
+
   function renderDiagnoses() {
     if (!state.diagnoses || state.diagnoses.length === 0) {
       return `<span style="color:#999">${t('no_estimate')}</span>`;
@@ -654,6 +750,8 @@
           condition: T.de[state.condition] || state.condition,
           pain: T.de[state.pain] || state.pain,
           since: T.de[state.since] || state.since,
+          medications: T.de[state.medications] || state.medications,
+          allergies: state.allergies.map(a => T.de[a] || a).join(', '),
         })
       });
       const data = await resp.json();
@@ -677,8 +775,11 @@
     document.getElementById('sum-condition').textContent = state.condition ? t(state.condition) : '–';
     document.getElementById('sum-pain').textContent = state.pain ? t(state.pain) : '–';
     document.getElementById('sum-since').textContent = state.since ? t(state.since) : '–';
+    document.getElementById('sum-medications').textContent = state.medications ? t(state.medications) : '–';
+    document.getElementById('sum-allergies').textContent = state.allergies.length > 0
+      ? state.allergies.map(a => t(a)).join(', ') : '–';
     document.getElementById('sum-diagnose').innerHTML = renderDiagnoses();
-    goto(9);
+    goto(11);
   }
 
   function resetApp() {
@@ -691,9 +792,11 @@
     state.diagnoses = [];
     state.condition = null;
     state.pain = null;
+    state.medications = null;
+    state.allergies = [];
     state.since = null;
 
-    ['next1','next2','next3','next4','next5','next6','next7','next8'].forEach(id => {
+    ['next1','next2','next3','next4','next5','next6','next7','next8','next9','next10'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.disabled = true;
     });
