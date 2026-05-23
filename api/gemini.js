@@ -39,11 +39,16 @@ export default async function handler(req, res) {
       return res.status(200).json({ translated });
 
     } else if (action === 'questions') {
-      const { bodyPart, lang } = req.body;
+      const { bodyPart, lang, gender, age } = req.body;
       if (!bodyPart || !lang) return res.status(400).json({ error: 'Missing bodyPart or lang' });
 
       const langName = langNames[lang] || lang;
-      const prompt = `Du bist Teil einer visuellen Triage-App für Notaufnahmen. Die App hat bereits separate Screens für Schmerzstärke und Dauer. Du generierst NUR antippbare Symptom-Optionen - keine Fragen, keine Sätze, nur kurze Schlagworte mit maximal 3 Wörtern. Gute Beispiele: 'Taubheit', 'Schwellung', 'Kribbeln', 'Ausstrahlung', 'Plötzlich aufgetreten', 'Nach Essen schlimmer'. Schlechte Beispiele: 'Wie stark sind die Schmerzen?', 'Seit wann?', 'Beschreiben Sie'. Patient hat Beschwerden in: ${bodyPart}. Generiere bis zu 6 passende Symptom-Optionen auf ${langName}. Antworte nur als JSON Array: [{"emoji":"...","label":"..."}]. Kein weiterer Text.`;
+      const isFemaleFertile = gender === 'Weiblich' && (age?.includes('Jugendlich') || age?.includes('Erwachsen'));
+      const hasAbdomen = /Bauch|Unterbauch|Unterleib/i.test(bodyPart);
+      const menstruationHint = isFemaleFertile && hasAbdomen
+        ? ' Wichtig: Patientin ist weiblich im gebärfähigen Alter mit Unterbauchbeschwerden. Füge "Ausbleiben der Periode" als eine der Optionen ein.'
+        : '';
+      const prompt = `Du bist Teil einer visuellen Triage-App für Notaufnahmen. Die App hat bereits separate Screens für Schmerzstärke und Dauer. Du generierst NUR antippbare Symptom-Optionen - keine Fragen, keine Sätze, nur kurze Schlagworte mit maximal 3 Wörtern. Gute Beispiele: 'Taubheit', 'Schwellung', 'Kribbeln', 'Ausstrahlung', 'Plötzlich aufgetreten', 'Nach Essen schlimmer'. Schlechte Beispiele: 'Wie stark sind die Schmerzen?', 'Seit wann?', 'Beschreiben Sie'. Patient hat Beschwerden in: ${bodyPart}.${menstruationHint} Generiere bis zu 6 passende Symptom-Optionen auf ${langName}. Antworte nur als JSON Array: [{"emoji":"...","label":"..."}]. Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const questions = JSON.parse(raw);
       if (!Array.isArray(questions) || questions.length < 1) throw new Error('Unexpected response');
@@ -54,7 +59,7 @@ export default async function handler(req, res) {
       if (!bodyPart || !Array.isArray(symptoms) || !lang) return res.status(400).json({ error: 'Missing bodyPart, symptoms, or lang' });
 
       const langName = langNames[lang] || lang;
-      const prompt = `Du bist ein erfahrener Notaufnahmearzt. Analysiere folgende Patientendaten und nenne die 3 wahrscheinlichsten Diagnosen sortiert nach Wahrscheinlichkeit. Berücksichtige Geschlecht und Alter bei der Einschätzung - zum Beispiel Schwangerschaft bei weiblichen Patienten im gebärfähigen Alter, oder typische altersbedingte Erkrankungen. Patientendaten: Geschlecht: ${gender || 'unbekannt'}, Alter: ${age || 'unbekannt'}, Beschwerden in: ${bodyPart}, Symptome: ${symptoms.join(', ') || 'keine'}, Schmerz: ${pain || 'unbekannt'}, Seit: ${since || 'unbekannt'}. Antworte nur als JSON Array mit exakt 3 Objekten, name und likelihood auf ${langName}: [{"name":"...","likelihood":"..."}]. Likelihood ist einer von: Wahrscheinlich, Möglich, Unwahrscheinlich (übersetzt auf ${langName}). Kein weiterer Text.`;
+      const prompt = `Du bist ein erfahrener Notaufnahmearzt. Analysiere folgende Patientendaten präzise. Wichtige Hinweise: Bei Brust + Arm Symptomen immer Herzinfarkt in Betracht ziehen unabhängig von links oder rechts, da Patienten Seiten verwechseln. Bei weiblichen Patienten im gebärfähigen Alter mit Unterbauchschmerzen immer Schwangerschaft und Eileiterschwangerschaft berücksichtigen. Körperstellen-Kombinationen sind wichtiger als einzelne Stellen. Patientendaten: Geschlecht: ${gender || 'unbekannt'}, Alter: ${age || 'unbekannt'}, Beschwerden in: ${bodyPart}, Symptome: ${symptoms.join(', ') || 'keine'}, Schmerz: ${pain || 'unbekannt'}, Seit: ${since || 'unbekannt'}. Nenne exakt 3 wahrscheinlichste Diagnosen. name und likelihood auf ${langName}. Antworte nur als JSON Array: [{"name":"...","likelihood":"..."}]. Likelihood: Wahrscheinlich, Möglich, oder Unwahrscheinlich (übersetzt auf ${langName}). Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const diagnoses = JSON.parse(raw);
       if (!Array.isArray(diagnoses)) throw new Error('Unexpected response');
