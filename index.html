@@ -84,16 +84,6 @@
     .zone:hover { background: #BBDEFB; }
     .zone.selected { background: #2196F3; border-color: #1565C0; }
 
-    .status-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: auto; }
-    .status-btn {
-      background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 14px;
-      padding: 0.85rem 1rem; cursor: pointer; display: flex; align-items: center;
-      gap: 14px; width: 100%; text-align: left; transition: all 0.15s;
-    }
-    .status-btn:hover { border-color: #90CAF9; background: #E3F2FD; }
-    .status-btn.selected { border-color: #2196F3; background: #E3F2FD; }
-    .status-btn .s-emoji { font-size: 2rem; line-height: 1; }
-    .status-btn .s-label { font-size: 0.95rem; color: #333; }
 
     .summary-card { background: #f8f9fa; border-radius: 14px; padding: 1rem; margin-bottom: 10px; }
     .summary-label { font-size: 0.75rem; color: #999; margin-bottom: 4px; text-transform: uppercase; }
@@ -270,12 +260,22 @@
   <div class="screen" id="s6">
     <div class="progress" id="prog6"></div>
     <div class="screen-title" data-i18n="sa_title">Wie fühlen Sie sich?</div>
-    <div class="status-list">
-      <button class="status-btn" onclick="selectCondition(this,'cond_normal')"><span class="s-emoji">😐</span><span class="s-label" data-i18n="cond_normal">Normal / Wie immer</span></button>
-      <button class="status-btn" onclick="selectCondition(this,'cond_unwell')"><span class="s-emoji">😟</span><span class="s-label" data-i18n="cond_unwell">Unwohl</span></button>
-      <button class="status-btn" onclick="selectCondition(this,'cond_bad')"><span class="s-emoji">😰</span><span class="s-label" data-i18n="cond_bad">Schlecht</span></button>
-      <button class="status-btn" onclick="selectCondition(this,'cond_severe')"><span class="s-emoji">😱</span><span class="s-label" data-i18n="cond_severe">Kaum auszuhalten</span></button>
-      <button class="status-btn" onclick="selectCondition(this,'cond_emergency')"><span class="s-emoji">🆘</span><span class="s-label" data-i18n="cond_emergency">Notfall</span></button>
+    <div class="grid">
+      <button class="option-btn" onclick="selectCondition(this,'cond_normal')">
+        <span class="emoji">😐</span><span class="label" data-i18n="cond_normal">Normal</span>
+      </button>
+      <button class="option-btn" onclick="selectCondition(this,'cond_unwell')">
+        <span class="emoji">😟</span><span class="label" data-i18n="cond_unwell">Angeschlagen</span>
+      </button>
+      <button class="option-btn" onclick="selectCondition(this,'cond_bad')">
+        <span class="emoji">😰</span><span class="label" data-i18n="cond_bad">Krank</span>
+      </button>
+      <button class="option-btn" onclick="selectCondition(this,'cond_severe')">
+        <span class="emoji">😱</span><span class="label" data-i18n="cond_severe">Schlecht</span>
+      </button>
+      <button class="option-btn" onclick="selectCondition(this,'cond_emergency')">
+        <span class="emoji">🆘</span><span class="label" data-i18n="cond_emergency">Notfall</span>
+      </button>
     </div>
     <button class="next-btn" id="next6" disabled onclick="goto(7)" data-i18n="next">Weiter →</button>
   </div>
@@ -284,12 +284,22 @@
   <div class="screen" id="s7">
     <div class="progress" id="prog7"></div>
     <div class="screen-title" data-i18n="sb_title">Wie stark sind die Schmerzen?</div>
-    <div class="status-list">
-      <button class="status-btn" onclick="selectPain(this,'pain_none')"><span class="s-emoji">😐</span><span class="s-label" data-i18n="pain_none">Keine</span></button>
-      <button class="status-btn" onclick="selectPain(this,'pain_mild')"><span class="s-emoji">🙁</span><span class="s-label" data-i18n="pain_mild">Leicht</span></button>
-      <button class="status-btn" onclick="selectPain(this,'pain_medium')"><span class="s-emoji">😟</span><span class="s-label" data-i18n="pain_medium">Mittel</span></button>
-      <button class="status-btn" onclick="selectPain(this,'pain_strong')"><span class="s-emoji">😰</span><span class="s-label" data-i18n="pain_strong">Stark</span></button>
-      <button class="status-btn" onclick="selectPain(this,'pain_unbearable')"><span class="s-emoji">😱</span><span class="s-label" data-i18n="pain_unbearable">Unerträglich</span></button>
+    <div class="grid">
+      <button class="option-btn" onclick="selectPain(this,'pain_none')">
+        <span class="emoji">😐</span><span class="label" data-i18n="pain_none">Keine (0)</span>
+      </button>
+      <button class="option-btn" onclick="selectPain(this,'pain_mild')">
+        <span class="emoji">🙁</span><span class="label" data-i18n="pain_mild">Leicht (1–3)</span>
+      </button>
+      <button class="option-btn" onclick="selectPain(this,'pain_medium')">
+        <span class="emoji">😟</span><span class="label" data-i18n="pain_medium">Mittel (4–6)</span>
+      </button>
+      <button class="option-btn" onclick="selectPain(this,'pain_strong')">
+        <span class="emoji">😰</span><span class="label" data-i18n="pain_strong">Stark (7–9)</span>
+      </button>
+      <button class="option-btn" onclick="selectPain(this,'pain_unbearable')">
+        <span class="emoji">😱</span><span class="label" data-i18n="pain_unbearable">Unerträglich (10)</span>
+      </button>
     </div>
     <button class="next-btn" id="next7" disabled onclick="goto(8)" data-i18n="next">Weiter →</button>
   </div>
@@ -602,14 +612,14 @@
   }
 
   function selectCondition(el, key) {
-    el.closest('.screen').querySelectorAll('.status-btn').forEach(b => b.classList.remove('selected'));
+    el.closest('.screen').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     state.condition = key;
     document.getElementById('next6').disabled = false;
   }
 
   function selectPain(el, key) {
-    el.closest('.screen').querySelectorAll('.status-btn').forEach(b => b.classList.remove('selected'));
+    el.closest('.screen').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     state.pain = key;
     document.getElementById('next7').disabled = false;
@@ -689,7 +699,7 @@
     });
     document.getElementById('next0').disabled = false;
 
-    document.querySelectorAll('.option-btn, .bio-gender-btn, .status-btn, .zone').forEach(el => {
+    document.querySelectorAll('.option-btn, .bio-gender-btn, .zone').forEach(el => {
       el.classList.remove('selected');
     });
     document.querySelectorAll('.bio-gender-btn').forEach(b => { b.style.borderColor = ''; });
