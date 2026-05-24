@@ -566,7 +566,7 @@
   document.documentElement.style.setProperty('--grid-columns', GRID_COLUMNS);
 
   const state = {
-    lang: 'de', gender: null, age: null, who: null,
+    lang: 'de', selectedLanguage: 'German', gender: null, age: null, who: null,
     zones: [], condition: null, pain: null,
     painQuality: [], radiation: [], painPattern: [],
     since: null, conditions: [],
@@ -675,6 +675,9 @@
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     const lang = el.dataset.lang;
+
+    const langNameMap = { de: 'German', en: 'English', tr: 'Turkish', ar: 'Arabic', ru: 'Russian', pl: 'Polish' };
+    state.selectedLanguage = langNameMap[lang] || lang;
 
     if (lang === 'de' || T[lang]) {
       state.lang = lang;
@@ -787,11 +790,13 @@
         body: JSON.stringify({
           action: 'questions_round1',
           zones, lang: state.lang,
+          language: state.selectedLanguage,
           gender: T.de[state.gender] || state.gender,
           age: T.de[state.age] || state.age,
           condition: T.de[state.condition] || state.condition,
           pain: T.de[state.pain] || state.pain,
           since: T.de[state.since] || state.since,
+          conditions: state.conditions.map(c => T.de[c] || c).join(', '),
         })
       });
       const data = await resp.json();
@@ -820,11 +825,16 @@
         body: JSON.stringify({
           action: 'questions_round2',
           zones, lang: state.lang,
+          language: state.selectedLanguage,
           gender: T.de[state.gender] || state.gender,
           age: T.de[state.age] || state.age,
           condition: T.de[state.condition] || state.condition,
           pain: T.de[state.pain] || state.pain,
+          painQuality: state.painQuality.map(k => T.de[k] || k).join(', '),
+          radiation: state.radiation.map(k => T.de[k] || k).join(', '),
+          painPattern: state.painPattern.map(k => T.de[k] || k).join(', '),
           since: T.de[state.since] || state.since,
+          conditions: state.conditions.map(c => T.de[c] || c).join(', '),
           round1Answers: state.round1Answers,
         })
       });
@@ -966,6 +976,8 @@
           round1Answers: state.round1Answers,
           round2Answers: state.round2Answers,
           lang: state.lang,
+          language: state.selectedLanguage,
+          who: T.de[state.who] || state.who,
           gender: T.de[state.gender] || state.gender,
           age: T.de[state.age] || state.age,
           condition: T.de[state.condition] || state.condition,
@@ -1019,6 +1031,7 @@
 
   function resetApp() {
     state.lang = 'de';
+    state.selectedLanguage = 'German';
     state.gender = null;
     state.age = null;
     state.who = null;

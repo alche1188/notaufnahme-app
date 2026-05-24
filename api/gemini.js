@@ -39,42 +39,110 @@ export default async function handler(req, res) {
       return res.status(200).json({ translated });
 
     } else if (action === 'questions_round1') {
-      const { zones, lang, gender, age, condition, pain, since } = req.body;
+      const { zones, lang, gender, age, condition, pain, since, conditions } = req.body;
       if (!zones || !lang) return res.status(400).json({ error: 'Missing zones or lang' });
 
       const langName = langNames[lang] || lang;
-      const isFemaleFertile = gender === 'Weiblich' && (age?.includes('Jugendlich') || age?.includes('Erwachsen'));
-      const hasAbdomen = /Bauch|Unterleib/i.test(zones);
-      const menstruationHint = isFemaleFertile && hasAbdomen
-        ? ' Wichtig: Patientin ist weiblich im gebärfähigen Alter mit Unterleibsbeschwerden. Füge "Ausbleiben der Periode" als eine der Optionen ein.'
-        : '';
-      const prompt = `Du bist Teil einer Notaufnahme Voranmeldungs-App. Patient: Geschlecht ${gender || 'unbekannt'}, Alter ${age || 'unbekannt'}, Beschwerden in ${zones}, Zustand ${condition || 'unbekannt'}, Schmerz ${pain || 'unbekannt'}, Seit ${since || 'unbekannt'}.${menstruationHint} Generiere 6 präzise Symptom-Optionen als kurze Schlagworte (max 3 Wörter) die noch nicht durch die bisherigen Angaben abgedeckt sind. Keine Fragen, keine Sätze. Antworte nur als JSON Array auf ${langName}: [{"emoji":"...","label":"..."}]. Kein weiterer Text.`;
+      const prompt = `Du bist Teil einer Notaufnahme Voranmeldungs-App.
+Die App hat bereits separate Screens für Schmerzstärke, Dauer, Zustand und Körperstelle – diese Informationen nicht wiederholen.
+Du präzisierst jetzt den Ort der Beschwerden.
+
+Generiere 6 Optionen die den Ort der Beschwerden eingrenzen.
+Kurze Schlagworte, maximal 3 Wörter, keine Sätze, keine Fragen.
+Gute Beispiele: 'Rechts oben', 'Unterbauch', 'Kniegelenk', 'Schulterblatt'
+Schlechte Beispiele: 'Wo genau tut es weh?', 'Starke Schmerzen', 'Seit heute'
+
+Patientenkontext:
+- Geschlecht: ${gender || ''}
+- Alter: ${age || ''}
+- Beschwerden grob in: ${zones}
+- Zustand: ${condition || ''}
+- Schmerz: ${pain || ''}
+- Seit: ${since || ''}
+- Vorerkrankungen: ${conditions || ''}
+
+Hinweis: Säuglinge (0-1 Jahre) und Hochbetagte (80+) haben atypische Symptomatik – Optionen entsprechend anpassen.
+Fehlende oder leere Felder ignorieren und nicht interpretieren.
+
+Antworte auf ${langName}. Antworte nur als JSON Array mit exakt 6 Objekten: [{"emoji":"...","label":"..."}]. Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const questions = JSON.parse(raw);
       if (!Array.isArray(questions) || questions.length < 1) throw new Error('Unexpected response');
       return res.status(200).json({ questions: questions.slice(0, 6) });
 
     } else if (action === 'questions_round2') {
-      const { zones, lang, gender, age, condition, pain, since, round1Answers } = req.body;
+      const { zones, lang, gender, age, condition, pain, painQuality, radiation, painPattern, since, conditions, round1Answers } = req.body;
       if (!zones || !lang) return res.status(400).json({ error: 'Missing zones or lang' });
 
       const langName = langNames[lang] || lang;
-      const prompt = `Du bist Teil einer Notaufnahme Voranmeldungs-App. Patient: Geschlecht ${gender || 'unbekannt'}, Alter ${age || 'unbekannt'}, Beschwerden in ${zones}, Zustand ${condition || 'unbekannt'}, Schmerz ${pain || 'unbekannt'}, Seit ${since || 'unbekannt'}, Symptome aus Runde 1: ${Array.isArray(round1Answers) && round1Answers.length ? round1Answers.join(', ') : 'keine'}. Generiere 6 präzisierende Symptom-Optionen die tiefer in die bereits genannten Symptome gehen. Kurze Schlagworte max 3 Wörter, keine Duplikate zu Runde 1. Antworte nur als JSON Array auf ${langName}: [{"emoji":"...","label":"..."}]. Kein weiterer Text.`;
+      const prompt = `Du bist Teil einer Notaufnahme Voranmeldungs-App.
+Die App hat bereits separate Screens für Schmerzstärke, Dauer, Zustand und Körperstelle – diese Informationen nicht wiederholen.
+Du kennst bereits den genauen Ort der Beschwerden aus Runde 1 – diese Optionen nicht wiederholen.
+Jetzt präzisierst du die Symptome selbst.
+
+Generiere 6 Symptom-Optionen die tiefer in die Beschwerden gehen.
+Kurze Schlagworte, maximal 3 Wörter, keine Sätze, keine Fragen.
+Nicht wiederholen: Schmerzstärke, Dauer, Ort, bereits gewählte Runde-1-Antworten.
+Gute Beispiele: 'Taubheit', 'Schwellung', 'Kribbeln', 'Rötung', 'Überwärmung'
+Schlechte Beispiele: 'Wie stark sind die Schmerzen?', 'Seit wann?', bereits genannte Orte aus Runde 1
+
+Patientenkontext:
+- Geschlecht: ${gender || ''}
+- Alter: ${age || ''}
+- Beschwerden grob in: ${zones}
+- Ort präzise (Runde 1): ${Array.isArray(round1Answers) && round1Answers.length ? round1Answers.join(', ') : ''}
+- Zustand: ${condition || ''}
+- Schmerz: ${pain || ''}
+- Schmerzqualität: ${painQuality || ''}
+- Ausstrahlung: ${radiation || ''}
+- Schmerzcharakter: ${painPattern || ''}
+- Seit: ${since || ''}
+- Vorerkrankungen: ${conditions || ''}
+
+Hinweis: Säuglinge (0-1 Jahre) und Hochbetagte (80+) haben atypische Symptomatik – Optionen entsprechend anpassen.
+Fehlende oder leere Felder ignorieren und nicht interpretieren.
+
+Antworte auf ${langName}. Antworte nur als JSON Array mit exakt 6 Objekten: [{"emoji":"...","label":"..."}]. Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const questions = JSON.parse(raw);
       if (!Array.isArray(questions) || questions.length < 1) throw new Error('Unexpected response');
       return res.status(200).json({ questions: questions.slice(0, 6) });
 
     } else if (action === 'diagnose') {
-      const { bodyPart, round1Answers, round2Answers, lang, gender, age, condition, pain, painQuality, radiation, painPattern, since, conditions, medications, allergies } = req.body;
+      const { bodyPart, round1Answers, round2Answers, lang, who, gender, age, condition, pain, painQuality, radiation, painPattern, since, conditions, medications, allergies } = req.body;
       if (!bodyPart || !lang) return res.status(400).json({ error: 'Missing bodyPart or lang' });
 
       const langName = langNames[lang] || lang;
-      const allSymptoms = [...(round1Answers || []), ...(round2Answers || [])].join(', ') || 'keine';
-      const allergyNote = allergies && allergies.includes('Medikamente')
-        ? ' ⚠️ KRITISCH: Patient hat bekannte Medikamentenallergie – bei allen Diagnosen mögliche Medikamentengaben besonders beachten.'
-        : '';
-      const prompt = `Du bist ein erfahrener Notaufnahmearzt. Analysiere folgende Patientendaten präzise. Wichtige Hinweise: Bei Brust + Arm Symptomen immer Herzinfarkt in Betracht ziehen unabhängig von links oder rechts, da Patienten Seiten verwechseln. Bei weiblichen Patienten im gebärfähigen Alter mit Unterbauchschmerzen immer Schwangerschaft und Eileiterschwangerschaft berücksichtigen. Körperstellen-Kombinationen sind wichtiger als einzelne Stellen. Säuglinge (0–1 Jahr) und hochbetagte Patienten (80+) sind besondere Risikogruppen: bei Säuglingen stets Sepsis, Intussuszeption und atypische Präsentationen berücksichtigen; bei Hochbetagten stets Sturz, Fraktur, atypischer Herzinfarkt, Sepsis und kognitive Veränderungen bedenken. Viele Medikamente (5+) können auf Polypharmazie und Wechselwirkungsrisiko hindeuten.${allergyNote} Patientendaten: Geschlecht: ${gender || 'unbekannt'}, Alter: ${age || 'unbekannt'}, Beschwerden in: ${bodyPart}, Symptome: ${allSymptoms}, Zustand: ${condition || 'unbekannt'}, Schmerz: ${pain || 'unbekannt'}, Schmerzqualität: ${painQuality || 'unbekannt'}, Ausstrahlung: ${radiation || 'unbekannt'}, Schmerzcharakter: ${painPattern || 'unbekannt'}, Seit: ${since || 'unbekannt'}, Vorerkrankungen: ${conditions || 'keine'}, Regelmäßige Medikamente: ${medications || 'unbekannt'}, Bekannte Allergien: ${allergies || 'keine'}. Nenne exakt 3 wahrscheinlichste Diagnosen. name und likelihood auf ${langName}. Antworte nur als JSON Array: [{"name":"...","likelihood":"..."}]. Likelihood: Wahrscheinlich, Möglich, oder Unwahrscheinlich (übersetzt auf ${langName}). Kein weiterer Text.`;
+      const prompt = `Du bist ein klinisches Vorsichtungssystem für Notaufnahmen. Du lieferst strukturierte Entscheidungshilfen – keine Diagnosen. Die medizinische Beurteilung liegt ausschließlich beim behandelnden Arzt.
+
+Analysiere folgende Patientendaten und nenne 3 differenzialdiagnostische Vorschläge sortiert nach Wahrscheinlichkeit.
+
+Wichtige Hinweise:
+- Bei Brust + Arm Symptomen immer Herzinfarkt in Betracht ziehen, unabhängig von links oder rechts, da Patienten Seiten verwechseln
+- Bei weiblichen Patienten im gebärfähigen Alter mit Unterbauchschmerzen immer Schwangerschaft und Eileiterschwangerschaft berücksichtigen
+- Körperstellen-Kombinationen sind wichtiger als einzelne Stellen
+- Vorerkrankungen stark gewichten – z.B. bekannte Herzprobleme + Brustschmerzen = sofort höhere Priorität
+- Säuglinge (0-1 Jahre) und Hochbetagte (80+) sind Risikogruppen mit atypischer Symptomatik
+- Fehlende oder leere Felder ignorieren und nicht interpretieren
+
+Patientendaten:
+- Wer: ${who || ''}
+- Geschlecht: ${gender || ''}
+- Alter: ${age || ''}
+- Beschwerden in: ${bodyPart}
+- Allgemeinzustand: ${condition || ''}
+- Schmerz: ${pain || ''}
+- Schmerzqualität: ${painQuality || ''}
+- Ausstrahlung: ${radiation || ''}
+- Schmerzcharakter: ${painPattern || ''}
+- Seit: ${since || ''}
+- Vorerkrankungen: ${conditions || ''}
+- Medikamente: ${medications || ''}
+- Allergien: ${allergies || ''}
+- Symptome Runde 1: ${Array.isArray(round1Answers) && round1Answers.length ? round1Answers.join(', ') : ''}
+- Symptome Runde 2: ${Array.isArray(round2Answers) && round2Answers.length ? round2Answers.join(', ') : ''}
+
+Antworte auf ${langName}. Antworte nur als JSON Array mit exakt 3 Objekten: [{"name":"...","likelihood":"..."}]. Likelihood ist einer von: Wahrscheinlich, Möglich, Weniger wahrscheinlich. Kein weiterer Text.`;
       const raw = await callGemini(apiKey, prompt);
       const diagnoses = JSON.parse(raw);
       if (!Array.isArray(diagnoses)) throw new Error('Unexpected response');
