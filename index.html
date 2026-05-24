@@ -211,7 +211,17 @@
         <span class="emoji">🧓</span><span class="label" data-i18n="age_elderly">Hochbetagt (80+)</span>
       </button>
     </div>
-    <button class="next-btn" id="next3" disabled onclick="goto(4)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next3" disabled onclick="gotoAfterAge()" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen Säugling: Redirect zur Anmeldung -->
+  <div class="screen" id="sinf">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:1.5rem;padding:1rem;">
+      <div style="font-size:4rem;">👶</div>
+      <div style="font-size:1.4rem;font-weight:600;color:#222;" data-i18n="infant_title">Bitte direkt zur Anmeldung</div>
+      <div style="font-size:1rem;color:#555;line-height:1.6;" data-i18n="infant_text">Für Säuglinge unter 1 Jahr bitten wir Sie, sich direkt an der Anmeldung zu melden. Unser Personal kümmert sich sofort um Sie.</div>
+    </div>
+    <button class="next-btn" onclick="resetApp()" data-i18n="infant_btn">Verstanden</button>
   </div>
 
   <!-- Screen 4: Körperstelle -->
@@ -586,6 +596,9 @@
       sage_title: 'Wie alt?',
       age_infant: 'Säugling (0–1)', age_child: 'Kind (2–12)', age_teen: 'Jugendlich (13–17)',
       age_adult: 'Erwachsen (18–64)', age_senior: 'Senior (65–79)', age_elderly: 'Hochbetagt (80+)',
+      infant_title: 'Bitte direkt zur Anmeldung',
+      infant_text: 'Für Säuglinge unter 1 Jahr bitten wir Sie, sich direkt an der Anmeldung zu melden. Unser Personal kümmert sich sofort um Sie.',
+      infant_btn: 'Verstanden',
       s3_title: 'Wo ist das Problem?', zone_hint: 'Bereiche antippen (Mehrfachauswahl)',
       zone_head: 'Kopf / Hals', zone_chest: 'Brust / Schulter', zone_abdomen: 'Bauch / Unterleib',
       zone_arm: 'Arm / Hand', zone_leg: 'Bein / Fuß', zone_back: 'Rücken / Gesäß',
@@ -753,6 +766,15 @@
 
   function checkNext3() {
     document.getElementById('next3').disabled = !state.age;
+  }
+
+  function gotoAfterAge() {
+    if (state.age === 'age_infant') {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('sinf').classList.add('active');
+    } else {
+      goto(4);
+    }
   }
 
   function selectZone(el, zone) {
