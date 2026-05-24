@@ -427,7 +427,7 @@
   <!-- Screen 12: Gemini Runde 1 -->
   <div class="screen" id="s12">
     <div class="progress" id="prog12"></div>
-    <div class="screen-title" data-i18n="round1_title">Welche Symptome treffen zu?</div>
+    <div class="screen-title" data-i18n="round1_title">Wo genau sind die Beschwerden?</div>
     <div class="grid" id="round1-grid" style="margin-bottom:auto;"></div>
     <button class="next-btn" id="next12" disabled onclick="gotoRound2()" data-i18n="next">Weiter →</button>
   </div>
@@ -589,7 +589,7 @@
       s3_title: 'Wo ist das Problem?', zone_hint: 'Bereiche antippen (Mehrfachauswahl)',
       zone_head: 'Kopf / Hals', zone_chest: 'Brust / Schulter', zone_abdomen: 'Bauch / Unterleib',
       zone_arm: 'Arm / Hand', zone_leg: 'Bein / Fuß', zone_back: 'Rücken / Gesäß',
-      round1_title: 'Welche Symptome treffen zu?',
+      round1_title: 'Wo genau sind die Beschwerden?',
       round2_title: 'Noch präziser: Was trifft zu?',
       sa_title: 'Wie fühlen Sie sich?',
       cond_normal: 'Normal', cond_unwell: 'Angeschlagen', cond_bad: 'Krank', cond_severe: 'Schlecht', cond_emergency: 'Notfall',
@@ -830,9 +830,9 @@
           age: T.de[state.age] || state.age,
           condition: T.de[state.condition] || state.condition,
           pain: T.de[state.pain] || state.pain,
-          painQuality: state.painQuality.map(k => T.de[k] || k).join(', '),
-          radiation: state.radiation.map(k => T.de[k] || k).join(', '),
-          painPattern: state.painPattern.map(k => T.de[k] || k).join(', '),
+          painQuality: state.pain === 'pain_none' ? 'Keine Schmerzen vorhanden' : state.painQuality.map(k => T.de[k] || k).join(', '),
+          radiation: state.pain === 'pain_none' ? 'Keine Schmerzen vorhanden' : state.radiation.map(k => T.de[k] || k).join(', '),
+          painPattern: state.pain === 'pain_none' ? 'Keine Schmerzen vorhanden' : state.painPattern.map(k => T.de[k] || k).join(', '),
           since: T.de[state.since] || state.since,
           conditions: state.conditions.map(c => T.de[c] || c).join(', '),
           round1Answers: state.round1Answers,
@@ -982,9 +982,9 @@
           age: T.de[state.age] || state.age,
           condition: T.de[state.condition] || state.condition,
           pain: T.de[state.pain] || state.pain,
-          painQuality: state.painQuality.map(k => T.de[k] || k).join(', '),
-          radiation: state.radiation.map(k => T.de[k] || k).join(', '),
-          painPattern: state.painPattern.map(k => T.de[k] || k).join(', '),
+          painQuality: state.pain === 'pain_none' ? 'Keine Schmerzen vorhanden' : state.painQuality.map(k => T.de[k] || k).join(', '),
+          radiation: state.pain === 'pain_none' ? 'Keine Schmerzen vorhanden' : state.radiation.map(k => T.de[k] || k).join(', '),
+          painPattern: state.pain === 'pain_none' ? 'Keine Schmerzen vorhanden' : state.painPattern.map(k => T.de[k] || k).join(', '),
           since: T.de[state.since] || state.since,
           conditions: state.conditions.map(c => T.de[c] || c).join(', '),
           medications: T.de[state.medications] || state.medications,

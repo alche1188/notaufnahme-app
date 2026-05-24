@@ -49,6 +49,7 @@ Du präzisierst jetzt den Ort der Beschwerden.
 
 Generiere 6 Optionen die den Ort der Beschwerden eingrenzen.
 Kurze Schlagworte, maximal 3 Wörter, keine Sätze, keine Fragen.
+Die 6 Optionen müssen den gesamten genannten Bereich abdecken – von oben nach unten, von innen nach außen. Nicht nur den offensichtlichsten Teilbereich. Bei Bauch/Unterleib z.B. auch Oberbauch und rechts oben einschließen.
 Gute Beispiele: 'Rechts oben', 'Unterbauch', 'Kniegelenk', 'Schulterblatt'
 Schlechte Beispiele: 'Wo genau tut es weh?', 'Starke Schmerzen', 'Seit heute'
 
