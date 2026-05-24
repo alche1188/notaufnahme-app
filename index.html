@@ -286,12 +286,93 @@
         <span class="emoji">😱</span><span class="label" data-i18n="pain_unbearable">Unerträglich (10)</span>
       </button>
     </div>
-    <button class="next-btn" id="next6" disabled onclick="goto(7)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next6" disabled onclick="gotoAfterPain()" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 7: Seit wann -->
+  <!-- Screen 7: Schmerzqualität -->
   <div class="screen" id="s7">
     <div class="progress" id="prog7"></div>
+    <div class="screen-title" data-i18n="se_title">Wie fühlt sich der Schmerz an?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectPainQuality(this,'painq_stab')">
+        <span class="emoji">🔪</span><span class="label" data-i18n="painq_stab">Stechend</span>
+      </button>
+      <button class="option-btn" onclick="selectPainQuality(this,'painq_press')">
+        <span class="emoji">🪨</span><span class="label" data-i18n="painq_press">Drückend</span>
+      </button>
+      <button class="option-btn" onclick="selectPainQuality(this,'painq_burn')">
+        <span class="emoji">🔥</span><span class="label" data-i18n="painq_burn">Brennend</span>
+      </button>
+      <button class="option-btn" onclick="selectPainQuality(this,'painq_dull')">
+        <span class="emoji">💫</span><span class="label" data-i18n="painq_dull">Dumpf / Pochend</span>
+      </button>
+      <button class="option-btn" onclick="selectPainQuality(this,'painq_cramp')">
+        <span class="emoji">⚡</span><span class="label" data-i18n="painq_cramp">Krampfartig</span>
+      </button>
+      <button class="option-btn" onclick="selectPainQuality(this,'painq_numb')">
+        <span class="emoji">😶</span><span class="label" data-i18n="painq_numb">Taubheit</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next7" disabled onclick="goto(8)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 8: Ausstrahlung -->
+  <div class="screen" id="s8">
+    <div class="progress" id="prog8"></div>
+    <div class="screen-title" data-i18n="sf_title">Strahlt der Schmerz aus?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectRadiation(this,'rad_none')">
+        <span class="emoji">✅</span><span class="label" data-i18n="rad_none">Nein</span>
+      </button>
+      <button class="option-btn" onclick="selectRadiation(this,'rad_arm')">
+        <span class="emoji">💪</span><span class="label" data-i18n="rad_arm">In den Arm</span>
+      </button>
+      <button class="option-btn" onclick="selectRadiation(this,'rad_jaw')">
+        <span class="emoji">🦷</span><span class="label" data-i18n="rad_jaw">In den Kiefer</span>
+      </button>
+      <button class="option-btn" onclick="selectRadiation(this,'rad_shoulder')">
+        <span class="emoji">🫁</span><span class="label" data-i18n="rad_shoulder">In die Schulter</span>
+      </button>
+      <button class="option-btn" onclick="selectRadiation(this,'rad_back')">
+        <span class="emoji">🔙</span><span class="label" data-i18n="rad_back">In den Rücken</span>
+      </button>
+      <button class="option-btn" onclick="selectRadiation(this,'rad_leg')">
+        <span class="emoji">🦵</span><span class="label" data-i18n="rad_leg">In das Bein</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next8" disabled onclick="goto(9)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 9: Schmerzcharakter -->
+  <div class="screen" id="s9">
+    <div class="progress" id="prog9"></div>
+    <div class="screen-title" data-i18n="sg_title">Wie tritt der Schmerz auf?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectPainPattern(this,'pp_constant')">
+        <span class="emoji">⏸️</span><span class="label" data-i18n="pp_constant">Dauerhaft</span>
+      </button>
+      <button class="option-btn" onclick="selectPainPattern(this,'pp_waves')">
+        <span class="emoji">🌊</span><span class="label" data-i18n="pp_waves">In Wellen</span>
+      </button>
+      <button class="option-btn" onclick="selectPainPattern(this,'pp_movement')">
+        <span class="emoji">🏃</span><span class="label" data-i18n="pp_movement">Beim Bewegen</span>
+      </button>
+      <button class="option-btn" onclick="selectPainPattern(this,'pp_after_eat')">
+        <span class="emoji">🍽️</span><span class="label" data-i18n="pp_after_eat">Nach dem Essen</span>
+      </button>
+      <button class="option-btn" onclick="selectPainPattern(this,'pp_night')">
+        <span class="emoji">🌙</span><span class="label" data-i18n="pp_night">Nachts</span>
+      </button>
+      <button class="option-btn" onclick="selectPainPattern(this,'pp_comes_goes')">
+        <span class="emoji">✨</span><span class="label" data-i18n="pp_comes_goes">Kommt und geht</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next9" disabled onclick="goto(10)" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 10: Seit wann -->
+  <div class="screen" id="s10">
+    <div class="progress" id="prog10"></div>
     <div class="screen-title" data-i18n="s6_title">Seit wann?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectOne(this,'since','since_min')">
@@ -313,28 +394,55 @@
         <span class="emoji">📆</span><span class="label" data-i18n="since_long">Länger (&gt; 1 Monat)</span>
       </button>
     </div>
-    <button class="next-btn" id="next7" disabled onclick="gotoRound1()" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next10" disabled onclick="goto(11)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 8: Gemini Runde 1 -->
-  <div class="screen" id="s8">
-    <div class="progress" id="prog8"></div>
+  <!-- Screen 11: Vorerkrankungen -->
+  <div class="screen" id="s11">
+    <div class="progress" id="prog11"></div>
+    <div class="screen-title" data-i18n="sh_title">Haben Sie bekannte Vorerkrankungen?</div>
+    <div class="grid">
+      <button class="option-btn" onclick="selectConditions(this,'prev_none')">
+        <span class="emoji">✅</span><span class="label" data-i18n="prev_none">Keine</span>
+      </button>
+      <button class="option-btn" onclick="selectConditions(this,'prev_heart')">
+        <span class="emoji">❤️</span><span class="label" data-i18n="prev_heart">Herzprobleme</span>
+      </button>
+      <button class="option-btn" onclick="selectConditions(this,'prev_bp')">
+        <span class="emoji">💉</span><span class="label" data-i18n="prev_bp">Bluthochdruck</span>
+      </button>
+      <button class="option-btn" onclick="selectConditions(this,'prev_diabetes')">
+        <span class="emoji">🩸</span><span class="label" data-i18n="prev_diabetes">Diabetes</span>
+      </button>
+      <button class="option-btn" onclick="selectConditions(this,'prev_lungs')">
+        <span class="emoji">🫁</span><span class="label" data-i18n="prev_lungs">Lungen / Asthma</span>
+      </button>
+      <button class="option-btn" onclick="selectConditions(this,'prev_other')">
+        <span class="emoji">❓</span><span class="label" data-i18n="prev_other">Sonstiges</span>
+      </button>
+    </div>
+    <button class="next-btn" id="next11" disabled onclick="gotoRound1()" data-i18n="next">Weiter →</button>
+  </div>
+
+  <!-- Screen 12: Gemini Runde 1 -->
+  <div class="screen" id="s12">
+    <div class="progress" id="prog12"></div>
     <div class="screen-title" data-i18n="round1_title">Welche Symptome treffen zu?</div>
     <div class="grid" id="round1-grid" style="margin-bottom:auto;"></div>
-    <button class="next-btn" id="next8" disabled onclick="gotoRound2()" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next12" disabled onclick="gotoRound2()" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 9: Gemini Runde 2 -->
-  <div class="screen" id="s9">
-    <div class="progress" id="prog9"></div>
+  <!-- Screen 13: Gemini Runde 2 -->
+  <div class="screen" id="s13">
+    <div class="progress" id="prog13"></div>
     <div class="screen-title" data-i18n="round2_title">Noch präziser: Was trifft zu?</div>
     <div class="grid" id="round2-grid" style="margin-bottom:auto;"></div>
-    <button class="next-btn" id="next9" disabled onclick="goto(10)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next13" disabled onclick="goto(14)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 10: Medikamente -->
-  <div class="screen" id="s10">
-    <div class="progress" id="prog10"></div>
+  <!-- Screen 14: Medikamente -->
+  <div class="screen" id="s14">
+    <div class="progress" id="prog14"></div>
     <div class="screen-title" data-i18n="sc_title">Wie viele Medikamente nehmen Sie regelmäßig?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectMedications(this,'med_0')">
@@ -356,12 +464,12 @@
         <span class="emoji">💊💊💊💊💊</span><span class="label" data-i18n="med_5plus">5+</span>
       </button>
     </div>
-    <button class="next-btn" id="next10" disabled onclick="goto(11)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next14" disabled onclick="goto(15)" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 11: Allergien -->
-  <div class="screen" id="s11">
-    <div class="progress" id="prog11"></div>
+  <!-- Screen 15: Allergien -->
+  <div class="screen" id="s15">
+    <div class="progress" id="prog15"></div>
     <div class="screen-title" data-i18n="sd_title">Haben Sie bekannte Allergien?</div>
     <div class="grid">
       <button class="option-btn" onclick="selectAllergy(this,'allergy_none')">
@@ -383,11 +491,11 @@
         <span class="emoji">❓</span><span class="label" data-i18n="allergy_other">Sonstiges</span>
       </button>
     </div>
-    <button class="next-btn" id="next11" disabled onclick="goto(12)" data-i18n="next">Weiter →</button>
+    <button class="next-btn" id="next15" disabled onclick="showSummary()" data-i18n="next">Weiter →</button>
   </div>
 
-  <!-- Screen 12: Zusammenfassung -->
-  <div class="screen" id="s12">
+  <!-- Screen 16: Zusammenfassung -->
+  <div class="screen" id="s16">
     <div class="number-badge" id="wait-number">–</div>
     <div class="number-label" data-i18n="wait_label">Ihre Wartenummer</div>
     <div style="font-size:0.8rem;color:#999;text-align:center;margin-bottom:1rem;padding:0 1rem;border-top:1px solid #eee;padding-top:1rem;" data-i18n="for_staff">Für das Personal</div>
@@ -408,8 +516,24 @@
       <div class="summary-value" id="sum-pain">–</div>
     </div>
     <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_pain_quality">Schmerzqualität</div>
+      <div class="summary-value" id="sum-pain-quality">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_radiation">Ausstrahlung</div>
+      <div class="summary-value" id="sum-radiation">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_pain_pattern">Schmerzcharakter</div>
+      <div class="summary-value" id="sum-pain-pattern">–</div>
+    </div>
+    <div class="summary-card">
       <div class="summary-label" data-i18n="sum_since">Seit</div>
       <div class="summary-value" id="sum-since">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label" data-i18n="sum_conditions">Vorerkrankungen</div>
+      <div class="summary-value" id="sum-conditions">–</div>
     </div>
     <div class="summary-card">
       <div class="summary-label" data-i18n="sum_round1">Symptome (Runde 1)</div>
@@ -443,7 +567,9 @@
 
   const state = {
     lang: 'de', gender: null, age: null, who: null,
-    zones: [], condition: null, pain: null, since: null,
+    zones: [], condition: null, pain: null,
+    painQuality: [], radiation: [], painPattern: [],
+    since: null, conditions: [],
     round1Answers: [], round2Answers: [],
     medications: null, allergies: [], diagnoses: []
   };
@@ -474,12 +600,26 @@
       sd_title: 'Haben Sie bekannte Allergien?',
       allergy_none: 'Keine', allergy_drugs: 'Medikamente', allergy_food: 'Nahrungsmittel',
       allergy_insect: 'Insektengift', allergy_latex: 'Latex / Kontrastmittel', allergy_other: 'Sonstiges',
+      se_title: 'Wie fühlt sich der Schmerz an?',
+      painq_stab: 'Stechend', painq_press: 'Drückend', painq_burn: 'Brennend',
+      painq_dull: 'Dumpf / Pochend', painq_cramp: 'Krampfartig', painq_numb: 'Taubheit',
+      sf_title: 'Strahlt der Schmerz aus?',
+      rad_none: 'Nein', rad_arm: 'In den Arm', rad_jaw: 'In den Kiefer',
+      rad_shoulder: 'In die Schulter', rad_back: 'In den Rücken', rad_leg: 'In das Bein',
+      sg_title: 'Wie tritt der Schmerz auf?',
+      pp_constant: 'Dauerhaft', pp_waves: 'In Wellen', pp_movement: 'Beim Bewegen',
+      pp_after_eat: 'Nach dem Essen', pp_night: 'Nachts', pp_comes_goes: 'Kommt und geht',
       s6_title: 'Seit wann?',
       since_min: 'Minuten (< 1h)', since_hours: 'Stunden (1–6h)', since_today: 'Heute (6–24h)',
       since_days: 'Tage (2–7)', since_weeks: 'Wochen (1–4)', since_long: 'Länger (> 1 Monat)',
+      sh_title: 'Haben Sie bekannte Vorerkrankungen?',
+      prev_none: 'Keine', prev_heart: 'Herzprobleme', prev_bp: 'Bluthochdruck',
+      prev_diabetes: 'Diabetes', prev_lungs: 'Lungen / Asthma', prev_other: 'Sonstiges',
       wait_label: 'Ihre Wartenummer', for_staff: 'Für das Personal',
       sum_patient: 'Patient', sum_complaint: 'Beschwerden',
-      sum_condition: 'Zustand', sum_pain: 'Schmerz', sum_since: 'Seit',
+      sum_condition: 'Zustand', sum_pain: 'Schmerz',
+      sum_pain_quality: 'Schmerzqualität', sum_radiation: 'Ausstrahlung', sum_pain_pattern: 'Schmerzcharakter',
+      sum_since: 'Seit', sum_conditions: 'Vorerkrankungen',
       sum_round1: 'Symptome (Runde 1)', sum_round2: 'Symptome (Runde 2)',
       sum_medications: 'Medikamente', sum_allergies: 'Allergien', sum_causes: 'Mögliche Ursachen',
       no_estimate: 'Keine Einschätzung verfügbar',
@@ -514,7 +654,7 @@
   }
 
   function updateProgress(n) {
-    const total = 12;
+    const total = 16;
     for (let i = 1; i <= total; i++) {
       const el = document.getElementById('prog' + i);
       if (!el) continue;
@@ -579,7 +719,7 @@
     el.classList.add('selected');
     state[key] = value;
     if (key === 'who') checkNext1();
-    if (key === 'since') document.getElementById('next7').disabled = false;
+    if (key === 'since') document.getElementById('next10').disabled = false;
   }
 
   function checkNext1() {
@@ -659,12 +799,12 @@
       const grid = document.getElementById('round1-grid');
       grid.innerHTML = '';
       state.round1Answers = [];
-      data.questions.slice(0, GRID_COLUMNS * GRID_ROWS).forEach(buildDynamicGrid('round1-grid', state.round1Answers, 'next8'));
-      document.getElementById('next8').disabled = true;
-      goto(8);
+      data.questions.slice(0, GRID_COLUMNS * GRID_ROWS).forEach(buildDynamicGrid('round1-grid', state.round1Answers, 'next12'));
+      document.getElementById('next12').disabled = true;
+      goto(12);
     } catch (err) {
       console.error('Round 1 failed:', err);
-      goto(8);
+      goto(12);
     } finally {
       showLoading(false);
     }
@@ -693,12 +833,12 @@
       const grid = document.getElementById('round2-grid');
       grid.innerHTML = '';
       state.round2Answers = [];
-      data.questions.slice(0, GRID_COLUMNS * GRID_ROWS).forEach(buildDynamicGrid('round2-grid', state.round2Answers, 'next9'));
-      document.getElementById('next9').disabled = true;
-      goto(9);
+      data.questions.slice(0, GRID_COLUMNS * GRID_ROWS).forEach(buildDynamicGrid('round2-grid', state.round2Answers, 'next13'));
+      document.getElementById('next13').disabled = true;
+      goto(13);
     } catch (err) {
       console.error('Round 2 failed:', err);
-      goto(9);
+      goto(13);
     } finally {
       showLoading(false);
     }
@@ -718,11 +858,70 @@
     document.getElementById('next6').disabled = false;
   }
 
+  function gotoAfterPain() {
+    if (state.pain === 'pain_none') {
+      state.painQuality = [];
+      state.radiation = [];
+      state.painPattern = [];
+      goto(10);
+    } else {
+      goto(7);
+    }
+  }
+
+  function selectPainQuality(el, key) {
+    el.classList.toggle('selected');
+    if (el.classList.contains('selected')) { state.painQuality.push(key); }
+    else { state.painQuality = state.painQuality.filter(k => k !== key); }
+    document.getElementById('next7').disabled = state.painQuality.length === 0;
+  }
+
+  function selectRadiation(el, key) {
+    const screen = el.closest('.screen');
+    const btns = screen.querySelectorAll('.option-btn');
+    if (key === 'rad_none') {
+      btns.forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      state.radiation = ['rad_none'];
+    } else {
+      screen.querySelector('[onclick*="rad_none"]').classList.remove('selected');
+      state.radiation = state.radiation.filter(r => r !== 'rad_none');
+      el.classList.toggle('selected');
+      if (el.classList.contains('selected')) { state.radiation.push(key); }
+      else { state.radiation = state.radiation.filter(r => r !== key); }
+    }
+    document.getElementById('next8').disabled = state.radiation.length === 0;
+  }
+
+  function selectPainPattern(el, key) {
+    el.classList.toggle('selected');
+    if (el.classList.contains('selected')) { state.painPattern.push(key); }
+    else { state.painPattern = state.painPattern.filter(k => k !== key); }
+    document.getElementById('next9').disabled = state.painPattern.length === 0;
+  }
+
+  function selectConditions(el, key) {
+    const screen = el.closest('.screen');
+    const btns = screen.querySelectorAll('.option-btn');
+    if (key === 'prev_none') {
+      btns.forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      state.conditions = ['prev_none'];
+    } else {
+      screen.querySelector('[onclick*="prev_none"]').classList.remove('selected');
+      state.conditions = state.conditions.filter(c => c !== 'prev_none');
+      el.classList.toggle('selected');
+      if (el.classList.contains('selected')) { state.conditions.push(key); }
+      else { state.conditions = state.conditions.filter(c => c !== key); }
+    }
+    document.getElementById('next11').disabled = state.conditions.length === 0;
+  }
+
   function selectMedications(el, key) {
     el.closest('.screen').querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     state.medications = key;
-    document.getElementById('next10').disabled = false;
+    document.getElementById('next14').disabled = false;
   }
 
   function selectAllergy(el, key) {
@@ -739,7 +938,7 @@
       if (el.classList.contains('selected')) { state.allergies.push(key); }
       else { state.allergies = state.allergies.filter(a => a !== key); }
     }
-    document.getElementById('next11').disabled = state.allergies.length === 0;
+    document.getElementById('next15').disabled = state.allergies.length === 0;
   }
 
   function renderDiagnoses() {
@@ -771,7 +970,11 @@
           age: T.de[state.age] || state.age,
           condition: T.de[state.condition] || state.condition,
           pain: T.de[state.pain] || state.pain,
+          painQuality: state.painQuality.map(k => T.de[k] || k).join(', '),
+          radiation: state.radiation.map(k => T.de[k] || k).join(', '),
+          painPattern: state.painPattern.map(k => T.de[k] || k).join(', '),
           since: T.de[state.since] || state.since,
+          conditions: state.conditions.map(c => T.de[c] || c).join(', '),
           medications: T.de[state.medications] || state.medications,
           allergies: state.allergies.map(a => T.de[a] || a).join(', '),
         })
@@ -794,7 +997,15 @@
       ? state.zones.map(z => t(zoneKey[z])).join(', ') : '–';
     document.getElementById('sum-condition').textContent = state.condition ? t(state.condition) : '–';
     document.getElementById('sum-pain').textContent = state.pain ? t(state.pain) : '–';
+    document.getElementById('sum-pain-quality').textContent = state.painQuality.length > 0
+      ? state.painQuality.map(k => t(k)).join(', ') : '–';
+    document.getElementById('sum-radiation').textContent = state.radiation.length > 0
+      ? state.radiation.map(k => t(k)).join(', ') : '–';
+    document.getElementById('sum-pain-pattern').textContent = state.painPattern.length > 0
+      ? state.painPattern.map(k => t(k)).join(', ') : '–';
     document.getElementById('sum-since').textContent = state.since ? t(state.since) : '–';
+    document.getElementById('sum-conditions').textContent = state.conditions.length > 0
+      ? state.conditions.map(c => t(c)).join(', ') : '–';
     document.getElementById('sum-round1').textContent = state.round1Answers.length > 0
       ? state.round1Answers.join(', ') : '–';
     document.getElementById('sum-round2').textContent = state.round2Answers.length > 0
@@ -803,7 +1014,7 @@
     document.getElementById('sum-allergies').textContent = state.allergies.length > 0
       ? state.allergies.map(a => t(a)).join(', ') : '–';
     document.getElementById('sum-diagnose').innerHTML = renderDiagnoses();
-    goto(12);
+    goto(16);
   }
 
   function resetApp() {
@@ -814,14 +1025,18 @@
     state.zones = [];
     state.condition = null;
     state.pain = null;
+    state.painQuality = [];
+    state.radiation = [];
+    state.painPattern = [];
     state.since = null;
+    state.conditions = [];
     state.round1Answers = [];
     state.round2Answers = [];
     state.medications = null;
     state.allergies = [];
     state.diagnoses = [];
 
-    ['next1','next2','next3','next4','next5','next6','next7','next8','next9','next10','next11'].forEach(id => {
+    ['next1','next2','next3','next4','next5','next6','next7','next8','next9','next10','next11','next12','next13','next14','next15'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.disabled = true;
     });
